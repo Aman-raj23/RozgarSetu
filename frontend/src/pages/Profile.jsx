@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import API from "../api/axios";
+import { SKILLS } from "../components/SkillSelector";
+
+const AVATAR_COLORS = ["#ee7a14", "#3b82f6", "#10b981", "#8b5cf6", "#ec4899"];
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -12,6 +15,15 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
+  
+  // Worker fields
+  const [experience, setExperience] = useState(user?.experience || 0);
+  const [pastCompany, setPastCompany] = useState(user?.pastCompany || "");
+  const [skills, setSkills] = useState(user?.skills || []);
+  const [bio, setBio] = useState(user?.bio || "");
+  const [avatarColor, setAvatarColor] = useState(user?.avatarColor || AVATAR_COLORS[0]);
+  const [skillInput, setSkillInput] = useState("");
+
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -21,7 +33,15 @@ export default function Profile() {
     setError("");
     setMessage("");
     try {
-      const res = await API.put("/auth/profile", { name, phone });
+      const payload = { name, phone };
+      if (user?.role === "worker") {
+        payload.experience = experience;
+        payload.pastCompany = pastCompany;
+        payload.skills = skills;
+        payload.bio = bio;
+        payload.avatarColor = avatarColor;
+      }
+      const res = await API.put("/auth/profile", payload);
       // Update localStorage with new user data
       const updatedUser = res.data.user;
       sessionStorage.setItem("rozgarsetu_user", JSON.stringify(updatedUser));
@@ -36,6 +56,12 @@ export default function Profile() {
   const handleCancel = () => {
     setName(user?.name || "");
     setPhone(user?.phone || "");
+    setExperience(user?.experience || 0);
+    setPastCompany(user?.pastCompany || "");
+    setSkills(user?.skills || []);
+    setBio(user?.bio || "");
+    setAvatarColor(user?.avatarColor || AVATAR_COLORS[0]);
+    setSkillInput("");
     setEditing(false);
     setError("");
     setMessage("");
@@ -44,6 +70,17 @@ export default function Profile() {
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const addSkill = (skillName) => {
+    if (skillName && !skills.includes(skillName)) {
+      setSkills([...skills, skillName]);
+    }
+    setSkillInput("");
+  };
+
+  const removeSkill = (skillName) => {
+    setSkills(skills.filter((s) => s !== skillName));
   };
 
   if (!user) {
@@ -69,11 +106,34 @@ export default function Profile() {
 
         {/* Avatar section */}
         <div className="flex flex-col items-center pt-8 pb-4">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+          <div 
+            className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-black/10 transition-colors"
+            style={{ 
+              background: user?.role === "worker" ? avatarColor : "linear-gradient(to bottom right, var(--tw-gradient-from), var(--tw-gradient-to))",
+              ...(user?.role !== "worker" && {
+                "--tw-gradient-from": "#60a5fa",
+                "--tw-gradient-to": "#2563eb"
+              })
+            }}
+          >
             <span className="text-white text-3xl font-bold">
               {user.name?.charAt(0).toUpperCase()}
             </span>
           </div>
+          
+          {editing && user?.role === "worker" && (
+            <div className="flex gap-2 mt-4">
+              {AVATAR_COLORS.map(color => (
+                <button
+                  key={color}
+                  onClick={() => setAvatarColor(color)}
+                  className={`w-8 h-8 rounded-full border-2 transition-transform ${avatarColor === color ? "scale-110 border-dark-900" : "border-transparent hover:scale-110"}`}
+                  style={{ backgroundColor: color }}
+                  title="Select Color"
+                />
+              ))}
+            </div>
+          )}
           <h2 className="mt-4 text-xl font-bold text-dark-900">{user.name}</h2>
           <span className="inline-flex items-center gap-1.5 mt-1 px-3 py-1 rounded-full text-xs font-semibold bg-primary-50 text-primary-700 border border-primary-100 capitalize">
             {user.role === "worker" ? t("profile_worker") : t("profile_employer")}
@@ -151,6 +211,110 @@ export default function Profile() {
               {user.role === "worker" ? t("profile_worker") : t("profile_employer")}
             </p>
           </div>
+
+          {/* Worker Specific Fields */}
+          {user.role === "worker" && (
+            <div className="space-y-5 pt-4 border-t border-dark-100">
+              <h3 className="text-lg font-bold text-dark-900">Worker Profile</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-dark-500 mb-1.5">
+                    {t("worker_exp")}
+                  </label>
+                  {editing ? (
+                    <input
+                      type="number"
+                      min="0"
+                      value={experience}
+                      onChange={(e) => setExperience(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
+                    />
+                  ) : (
+                    <p className="px-4 py-3 rounded-xl bg-dark-50 border border-dark-100 text-dark-800 font-medium">
+                      {user.experience || 0} years
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-dark-500 mb-1.5">
+                    {t("worker_company")}
+                  </label>
+                  {editing ? (
+                    <input
+                      type="text"
+                      value={pastCompany}
+                      onChange={(e) => setPastCompany(e.target.value)}
+                      placeholder="e.g. L&T Construction"
+                      className="w-full px-4 py-3 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
+                    />
+                  ) : (
+                    <p className="px-4 py-3 rounded-xl bg-dark-50 border border-dark-100 text-dark-800 font-medium">
+                      {user.pastCompany || "None"}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-dark-500 mb-2">
+                  {t("worker_skills")}
+                </label>
+                {editing ? (
+                  <div>
+                    {skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {skills.map((s) => (
+                          <span key={s} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold bg-primary-50 text-primary-700 border border-primary-100">
+                            {s}
+                            <button type="button" onClick={() => removeSkill(s)} className="ml-1 text-primary-400 hover:text-primary-700">×</button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {SKILLS.filter((s) => !skills.includes(s.name)).slice(0, 6).map((skill) => (
+                        <button key={skill.name} type="button" onClick={() => addSkill(skill.name)} className="px-3 py-1.5 rounded-lg text-sm font-medium bg-dark-50 text-dark-600 border border-dark-200 hover:border-primary-300 hover:text-primary-600 transition-all flex items-center gap-1">
+                          <span>{skill.icon}</span> {skill.name}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input type="text" value={skillInput} onChange={(e) => setSkillInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(skillInput.trim()); } }} placeholder="Add custom skill..." className="flex-1 px-4 py-2.5 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 text-sm" />
+                      <button type="button" onClick={() => addSkill(skillInput.trim())} className="px-4 py-2.5 rounded-xl bg-dark-100 text-dark-600 font-semibold text-sm hover:bg-dark-200">Add</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {user.skills?.length > 0 ? user.skills.map((s) => (
+                      <span key={s} className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-primary-50 text-primary-700 border border-primary-100">{s}</span>
+                    )) : (
+                      <span className="text-sm text-dark-400">No skills added</span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-dark-500 mb-1.5">
+                  {t("worker_bio")}
+                </label>
+                {editing ? (
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    rows={4}
+                    placeholder={t("worker_bio_placeholder")}
+                    className="w-full px-4 py-3 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base resize-none"
+                  />
+                ) : (
+                  <p className="px-4 py-3 rounded-xl bg-dark-50 border border-dark-100 text-dark-800 whitespace-pre-wrap">
+                    {user.bio || <span className="text-dark-400 italic">No bio provided</span>}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Action buttons */}
           <div className="pt-4 border-t border-dark-100 space-y-3">

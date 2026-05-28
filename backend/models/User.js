@@ -34,6 +34,45 @@ const userSchema = new mongoose.Schema(
       lat: { type: Number, default: 0 },
       lng: { type: Number, default: 0 },
     },
+    // Worker profile fields
+    experience: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 50,
+    },
+    pastCompany: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    bio: {
+      type: String,
+      trim: true,
+      default: "",
+      maxlength: 500,
+    },
+    avatarColor: {
+      type: String,
+      default: "#ee7a14",
+    },
+    rating: {
+      average: { type: Number, default: 0 },
+      count: { type: Number, default: 0 },
+    },
+    hiredBy: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
+    notifications: [{
+      message: String,
+      read: { type: Boolean, default: false },
+      createdAt: { type: Date, default: Date.now }
+    }],
   },
   { timestamps: true }
 );

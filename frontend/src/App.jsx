@@ -11,6 +11,8 @@ import Register from "./pages/Register";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import PostJob from "./pages/PostJob";
 import Profile from "./pages/Profile";
+import Workers from "./pages/Workers";
+import WorkerDetail from "./pages/WorkerDetail";
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/jobs/:id" element={<JobDetail />} />
+              <Route path="/workers" element={<Workers />} />
+              <Route path="/workers/:id" element={<WorkerDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route

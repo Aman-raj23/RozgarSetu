@@ -50,22 +50,29 @@ export default function PostJob() {
     }
   }, [editId, user]);
 
-  // Get location
+  // Get fresh location (always request new GPS, don't rely on stale cache)
   useEffect(() => {
-    const saved = localStorage.getItem("rozgarsetu_location");
-    if (saved) {
-      setLocation(JSON.parse(saved));
-    } else if ("geolocation" in navigator) {
+    if (editId) return; // Skip auto-location when editing — it loads from the job data
+
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
           setLocation(loc);
           localStorage.setItem("rozgarsetu_location", JSON.stringify(loc));
         },
-        () => {} // ignore error
+        () => {
+          // GPS failed — fall back to cache only as last resort
+          const saved = localStorage.getItem("rozgarsetu_location");
+          if (saved) setLocation(JSON.parse(saved));
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
       );
+    } else {
+      const saved = localStorage.getItem("rozgarsetu_location");
+      if (saved) setLocation(JSON.parse(saved));
     }
-  }, []);
+  }, [editId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

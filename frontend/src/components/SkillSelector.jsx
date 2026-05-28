@@ -30,27 +30,33 @@ export default function SkillSelector({ onSelect, selected = [] }) {
           <button
             key={skill.name}
             onClick={() => handleClick(skill.name)}
-            className={`group relative flex flex-col items-center justify-center gap-2 p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 active:scale-95 ${
+            className={`group relative flex flex-col items-center justify-center gap-3 p-4 sm:p-6 rounded-[2rem] transition-all duration-300 active:scale-95 overflow-hidden ${
               isSelected
-                ? "border-primary-500 bg-primary-50 shadow-md shadow-primary-500/10"
-                : "border-dark-100 bg-white hover:border-primary-300 hover:shadow-md"
+                ? "bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-2 ring-primary-500 scale-105 z-10"
+                : "bg-white shadow-sm hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-1 border border-dark-100/50"
             }`}
           >
+            {isSelected && (
+              <div className="absolute inset-0 bg-primary-50/50 z-0" />
+            )}
+            
             <div
-              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${skill.color} flex items-center justify-center text-2xl sm:text-3xl shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all`}
+              className={`relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${skill.color} flex items-center justify-center text-3xl sm:text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 ease-out`}
             >
-              {skill.icon}
+              <span className="drop-shadow-md">{skill.icon}</span>
             </div>
+            
             <span
-              className={`text-xs sm:text-sm font-semibold text-center leading-tight ${
-                isSelected ? "text-primary-700" : "text-dark-600"
+              className={`relative z-10 text-sm sm:text-base font-bold text-center tracking-wide transition-colors ${
+                isSelected ? "text-primary-700" : "text-dark-600 group-hover:text-dark-900"
               }`}
             >
               {t(`skill_${skill.name}`)}
             </span>
+            
             {isSelected && (
-              <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center animate-fade-in">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="absolute top-3 right-3 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center animate-fade-in z-10 shadow-md">
+                <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>

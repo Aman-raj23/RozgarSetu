@@ -18,6 +18,20 @@ export default function Jobs() {
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
 
+  // Refresh location on mount so nearby search uses current coordinates
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          localStorage.setItem("rozgarsetu_location", JSON.stringify(loc));
+        },
+        () => {}, // keep existing cache if GPS fails
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+  }, []);
+
   const fetchJobs = useCallback(async () => {
     setLoading(true);
     setError("");

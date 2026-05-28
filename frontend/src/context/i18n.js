@@ -164,6 +164,29 @@ const translations = {
   profile_updated: { en: "Profile updated successfully!", hi: "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई!" },
   profile_logout: { en: "Logout", hi: "लॉगआउट" },
   profile_member_since: { en: "Member since", hi: "सदस्य" },
+
+  // ─── Worker Profiles & Hiring ───
+  nav_workers: { en: "Find Workers", hi: "मज़दूर खोजें" },
+  worker_exp: { en: "Experience (Years)", hi: "अनुभव (वर्ष)" },
+  worker_company: { en: "Past Company (Optional)", hi: "पिछली कंपनी (वैकल्पिक)" },
+  worker_skills: { en: "Skills", hi: "कौशल" },
+  worker_bio: { en: "About Me", hi: "मेरे बारे में" },
+  worker_bio_placeholder: { en: "Tell employers about your experience...", hi: "नियोक्ताओं को अपने अनुभव के बारे में बताएं..." },
+  worker_avatar_color: { en: "Profile Color", hi: "प्रोफ़ाइल रंग" },
+  workers_title: { en: "Available Workers", hi: "उपलब्ध मज़दूर" },
+  workers_search_placeholder: { en: "Search workers by name or skills...", hi: "नाम या कौशल से मज़दूर खोजें..." },
+  workers_empty: { en: "No workers found matching your search.", hi: "आपकी खोज से मेल खाने वाले कोई मज़दूर नहीं मिले।" },
+  workers_hired: { en: "Workers Hired", hi: "हायर किए गए मज़दूर" },
+  dash_browse_workers: { en: "Browse Workers", hi: "मज़दूर देखें" },
+  hire_btn: { en: "Hire Worker", hi: "काम पर रखें" },
+  hire_hiring: { en: "Hiring...", hi: "रख रहे हैं..." },
+  hired_btn: { en: "Hired", hi: "काम पर रखा" },
+  rate_btn: { en: "Rate Worker", hi: "रेट करें" },
+  rate_title: { en: "Rate this worker", hi: "इस मज़दूर को रेट करें" },
+  submit_rating: { en: "Submit Rating", hi: "रेटिंग जमा करें" },
+  rate_review_placeholder: { en: "Leave a review (optional)...", hi: "समीक्षा लिखें (वैकल्पिक)..." },
+  reviews: { en: "Reviews", hi: "समीक्षाएं" },
+  no_reviews: { en: "No reviews yet.", hi: "अभी तक कोई समीक्षा नहीं।" },
 };
 
 export default translations;

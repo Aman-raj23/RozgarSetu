@@ -72,6 +72,13 @@ const register = async (req, res) => {
         role: user.role,
         phone: user.phone,
         location: user.location,
+        experience: user.experience,
+        pastCompany: user.pastCompany,
+        skills: user.skills,
+        bio: user.bio,
+        avatarColor: user.avatarColor,
+        rating: user.rating,
+        notifications: user.notifications,
       },
     });
   } catch (error) {
@@ -116,6 +123,13 @@ const login = async (req, res) => {
         role: user.role,
         phone: user.phone,
         location: user.location,
+        experience: user.experience,
+        pastCompany: user.pastCompany,
+        skills: user.skills,
+        bio: user.bio,
+        avatarColor: user.avatarColor,
+        rating: user.rating,
+        notifications: user.notifications,
       },
     });
   } catch (error) {
@@ -138,11 +152,18 @@ const getMe = async (req, res) => {
 // @route   PUT /api/auth/profile
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone } = req.body;
+    const { name, phone, experience, pastCompany, skills, bio, avatarColor } = req.body;
 
     const updates = {};
     if (name && name.trim()) updates.name = name.trim();
     if (phone && phone.trim()) updates.phone = phone.trim();
+    
+    // Worker specific updates
+    if (experience !== undefined) updates.experience = Number(experience);
+    if (pastCompany !== undefined) updates.pastCompany = pastCompany.trim();
+    if (skills && Array.isArray(skills)) updates.skills = skills;
+    if (bio !== undefined) updates.bio = bio.trim();
+    if (avatarColor) updates.avatarColor = avatarColor;
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({ message: "Nothing to update" });
@@ -166,6 +187,13 @@ const updateProfile = async (req, res) => {
         role: user.role,
         phone: user.phone,
         location: user.location,
+        experience: user.experience,
+        pastCompany: user.pastCompany,
+        skills: user.skills,
+        bio: user.bio,
+        avatarColor: user.avatarColor,
+        rating: user.rating,
+        notifications: user.notifications,
       },
     });
   } catch (error) {
@@ -174,4 +202,21 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe, updateProfile };
+// @desc    Mark all notifications as read
+// @route   PUT /api/auth/notifications/read
+const markNotificationsRead = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.notifications.forEach(n => n.read = true);
+    await user.save();
+
+    res.json({ message: "Notifications marked as read", notifications: user.notifications });
+  } catch (error) {
+    console.error("Mark notifications read error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { register, login, getMe, updateProfile, markNotificationsRead };

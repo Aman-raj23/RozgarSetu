@@ -11,6 +11,7 @@ export default function EmployerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [hiredCount, setHiredCount] = useState(0);
 
   useEffect(() => {
     fetchMyJobs();
@@ -24,6 +25,11 @@ export default function EmployerDashboard() {
         (j) => j.employerId?._id === user?._id || j.employerId === user?._id
       );
       setJobs(myJobs);
+
+      // Fetch workers to count how many this employer has hired
+      const workersRes = await API.get("/workers");
+      const hiredWorkers = workersRes.data.filter(w => w.hiredBy?.includes(user?._id));
+      setHiredCount(hiredWorkers.length);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch your jobs");
     } finally {
@@ -56,15 +62,23 @@ export default function EmployerDashboard() {
             {t("dash_manage")}
           </p>
         </div>
-        <Link
-          to="/post-job"
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold shadow-lg shadow-accent-500/20 hover:from-accent-600 hover:to-accent-700 transition-all active:scale-95 flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          {t("dash_post_new")}
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            to="/workers"
+            className="px-6 py-3 rounded-xl bg-primary-50 text-primary-700 font-bold border border-primary-200 hover:bg-primary-100 transition-all active:scale-95"
+          >
+            {t("dash_browse_workers")}
+          </Link>
+          <Link
+            to="/post-job"
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold shadow-lg shadow-accent-500/20 hover:from-accent-600 hover:to-accent-700 transition-all active:scale-95 flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            {t("dash_post_new")}
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
@@ -87,9 +101,9 @@ export default function EmployerDashboard() {
         </div>
         <div className="bg-white rounded-xl border border-dark-100 p-4 sm:p-5">
           <p className="text-2xl sm:text-3xl font-extrabold text-primary-600">
-            ₹{jobs.length > 0 ? Math.round(jobs.reduce((a, j) => a + j.salary, 0) / jobs.length).toLocaleString("en-IN") : 0}
+            {hiredCount}
           </p>
-          <p className="text-sm text-dark-400 font-medium">{t("dash_avg_salary")}</p>
+          <p className="text-sm text-dark-400 font-medium">{t("workers_hired")}</p>
         </div>
       </div>
 
