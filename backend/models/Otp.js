@@ -15,11 +15,11 @@ const otpSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 600, // Auto-delete after 10 minutes (600 seconds)
+    expires: 600,
   },
 });
 
-// Hash the OTP before saving
+// Hash the OTP
 otpSchema.pre("save", async function (next) {
   if (!this.isModified("otp")) return next();
   const salt = await bcrypt.genSalt(10);
@@ -27,7 +27,7 @@ otpSchema.pre("save", async function (next) {
   next();
 });
 
-// Method to compare OTP
+
 otpSchema.methods.compareOtp = async function (candidateOtp) {
   return bcrypt.compare(candidateOtp, this.otp);
 };
