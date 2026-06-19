@@ -90,36 +90,29 @@ export default function VoiceSearch({ onResult, className = "" }) {
       <button
         type="button"
         onClick={toggleListening}
-        className={`relative p-4 rounded-2xl transition-all duration-300 ${
+        className={`relative p-3 rounded-full transition-all duration-300 ${
           listening
-            ? "bg-danger-500 text-white shadow-lg shadow-danger-500/30 scale-110"
-            : "bg-primary-50 text-primary-600 hover:bg-primary-100 hover:shadow-md"
+            ? "bg-error text-on-error shadow-lg scale-110"
+            : "bg-surface-container-low text-primary hover:bg-surface-container-high hover:shadow-md"
         }`}
         title={listening ? t("voice_stop") : t("voice_start")}
       >
         {/* Pulse ring animation when listening */}
         {listening && (
-          <span className="absolute inset-0 rounded-2xl bg-danger-500 animate-ping opacity-30" />
+          <span className="absolute inset-0 rounded-full bg-error animate-ping opacity-30" />
         )}
-        <svg className="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-          />
-        </svg>
+        <span className={`material-symbols-outlined relative z-10 text-2xl ${listening ? "icon-fill" : ""}`}>mic</span>
       </button>
 
       {transcript && (
-        <span className="text-sm text-dark-500 animate-fade-in">
-          <span className="text-dark-400">{t("voice_heard")} </span>
-          <span className="font-semibold text-dark-700">"{transcript}"</span>
+        <span className="text-sm text-on-surface-variant animate-fade-in">
+          <span className="text-on-surface-variant">{t("voice_heard")} </span>
+          <span className="font-semibold text-on-surface">"{transcript}"</span>
         </span>
       )}
 
       {listening && !transcript && (
-        <span className="text-sm text-danger-500 font-medium animate-pulse">
+        <span className="text-sm text-error font-medium animate-pulse">
           {t("voice_listening")}
         </span>
       )}

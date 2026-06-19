@@ -1,18 +1,18 @@
 import { useLanguage } from "../context/LanguageContext";
 
 const SKILLS = [
-  { name: "Electrician", icon: "⚡", color: "from-amber-400 to-amber-600" },
-  { name: "Plumber", icon: "🔧", color: "from-blue-400 to-blue-600" },
-  { name: "Painter", icon: "🎨", color: "from-pink-400 to-pink-600" },
-  { name: "Carpenter", icon: "🪚", color: "from-orange-400 to-orange-600" },
-  { name: "Farming", icon: "🌾", color: "from-green-400 to-green-600" },
-  { name: "Cooking", icon: "🍳", color: "from-red-400 to-red-600" },
-  { name: "Driving", icon: "🚗", color: "from-indigo-400 to-indigo-600" },
-  { name: "Cleaning", icon: "🧹", color: "from-cyan-400 to-cyan-600" },
-  { name: "Construction", icon: "🏗️", color: "from-stone-400 to-stone-600" },
-  { name: "Tailoring", icon: "🧵", color: "from-purple-400 to-purple-600" },
-  { name: "Gardening", icon: "🌿", color: "from-emerald-400 to-emerald-600" },
-  { name: "Security", icon: "🛡️", color: "from-slate-400 to-slate-600" },
+  { name: "Electrician", icon: "electrical_services" },
+  { name: "Plumber", icon: "water_damage" },
+  { name: "Painter", icon: "format_paint" },
+  { name: "Carpenter", icon: "carpenter" },
+  { name: "Farming", icon: "agriculture" },
+  { name: "Cooking", icon: "restaurant" },
+  { name: "Driving", icon: "directions_car" },
+  { name: "Cleaning", icon: "cleaning_services" },
+  { name: "Construction", icon: "architecture" },
+  { name: "Tailoring", icon: "design_services" },
+  { name: "Gardening", icon: "yard" },
+  { name: "Security", icon: "security" },
 ];
 
 export default function SkillSelector({ onSelect, selected = [] }) {
@@ -23,42 +23,44 @@ export default function SkillSelector({ onSelect, selected = [] }) {
   };
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-      {SKILLS.map((skill) => {
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {SKILLS.map((skill, idx) => {
         const isSelected = selected.includes(skill.name);
         return (
           <button
             key={skill.name}
             onClick={() => handleClick(skill.name)}
-            className={`group relative flex flex-col items-center justify-center gap-3 p-4 sm:p-6 rounded-[2rem] transition-all duration-300 active:scale-95 overflow-hidden ${
+            style={{ animationDelay: `${idx * 40}ms` }}
+            className={`group relative flex flex-col items-center justify-center gap-3 p-5 rounded-xl border transition-all duration-300 ease-out active:scale-[0.97] animate-fade-in-up ${
               isSelected
-                ? "bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] ring-2 ring-primary-500 scale-105 z-10"
-                : "bg-white shadow-sm hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-1 border border-dark-100/50"
+                ? "bg-primary-container border-primary shadow-md scale-[1.04]"
+                : "bg-surface-container-lowest border-outline-variant/50 hover:shadow-md hover:border-primary/30 hover:bg-surface-container-low hover:scale-[1.03]"
             }`}
           >
-            {isSelected && (
-              <div className="absolute inset-0 bg-primary-50/50 z-0" />
-            )}
-            
+            {/* Icon container */}
             <div
-              className={`relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${skill.color} flex items-center justify-center text-3xl sm:text-4xl shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 ease-out`}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${
+                isSelected
+                  ? "bg-primary text-on-primary"
+                  : "bg-primary-container/10 text-primary group-hover:bg-primary-container group-hover:text-on-primary-container"
+              }`}
             >
-              <span className="drop-shadow-md">{skill.icon}</span>
+              <span className="material-symbols-outlined text-2xl">{skill.icon}</span>
             </div>
-            
+
+            {/* Label */}
             <span
-              className={`relative z-10 text-sm sm:text-base font-bold text-center tracking-wide transition-colors ${
-                isSelected ? "text-primary-700" : "text-dark-600 group-hover:text-dark-900"
+              className={`text-sm font-semibold text-center leading-tight transition-colors ${
+                isSelected ? "text-on-primary-container" : "text-on-surface"
               }`}
             >
               {t(`skill_${skill.name}`)}
             </span>
-            
+
+            {/* Selected checkmark */}
             {isSelected && (
-              <div className="absolute top-3 right-3 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center animate-fade-in z-10 shadow-md">
-                <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
+              <div className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full flex items-center justify-center animate-fade-in shadow-lg z-20 bg-secondary-container">
+                <span className="material-symbols-outlined text-on-secondary-container text-sm">check</span>
               </div>
             )}
           </button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -10,6 +10,7 @@ export default function Login() {
   const { login } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,83 +31,104 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-dark-50 to-primary-50/30">
-      <div className="w-full max-w-md animate-fade-in-up">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-xl shadow-primary-500/20">
-            <span className="text-white text-2xl font-bold">R</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-dark-900">{t("login_title")}</h1>
-          <p className="mt-2 text-dark-400">{t("login_subtitle")}</p>
+    <div className="flex-grow flex flex-col md:flex-row min-h-[calc(100vh-64px)] bg-surface">
+      {/* ─── Image/Branding Section (Hidden on Mobile) ─── */}
+      <section className="hidden md:flex md:w-1/2 bg-primary-container relative overflow-hidden items-center justify-center p-xl">
+        <img 
+          alt="Rural Market" 
+          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay" 
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgeTGKvpIqLzOzdRoQMpZEMO7cjk9bOJKPIFB7AEmtmMKqWgS2kDycsMLFdpoNAnqjba68mudfuvcp3A0JsrT6CHE4lJKK3Ezx9GoVjGQI_Xht4BFLAoxW31rBNCVvCgimF0ChC0fSkDcRI6bbXJEY6lDlHKc2MERiZk91sxuz8A4JsVUcPbAVDlvUZZxiLZAUgwTsa0pOK_WlA9afrWMvv22RKzff_QyyUeThZTFHyi6Xv62HK10Uu3qbMgqC1fKbqMi2mdwDR5Ir"
+        />
+        <div className="relative z-10 text-center text-on-primary max-w-lg">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6">Welcome to RozgarSetu</h1>
+          <p className="text-lg opacity-90">Connecting local talent with trusted employers across Bharat. Simple, secure, and built for you.</p>
         </div>
+      </section>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-dark-100 p-6 sm:p-8">
+      {/* ─── Form Section ─── */}
+      <section className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 bg-surface-container-lowest">
+        <div className="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-6 md:p-8 border border-surface-container-high animate-fade-in-up">
+          
+          {/* Tab Navigation */}
+          <div className="flex border-b border-surface-container-highest mb-8">
+            <div className="flex-1 py-3 text-center font-label-lg font-bold text-primary border-b-2 border-primary transition-colors cursor-default">
+              Login
+            </div>
+            <Link to="/register" className="flex-1 py-3 text-center font-label-lg text-on-surface-variant hover:text-primary border-b-2 border-transparent transition-colors">
+              Register
+            </Link>
+          </div>
+
+          <h2 className="font-headline-sm font-bold text-primary mb-4">{t("login_title")}</h2>
+          <p className="font-body-md text-on-surface-variant mb-6">{t("login_subtitle")}</p>
+          
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-danger-500/10 border border-danger-500/20 text-danger-600 text-sm font-medium animate-fade-in">
+            <div className="mb-6 p-3 rounded-xl bg-error-container border border-error/20 text-error text-sm font-medium animate-fade-in flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">error</span>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="login-email" className="block text-sm font-semibold text-dark-700 mb-1.5">
+              <label htmlFor="login-email" className="block font-label-sm text-on-surface-variant mb-1">
                 {t("login_email")}
               </label>
-              <input
-                id="login-email"
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                placeholder={t("login_email_placeholder")}
-                className="w-full px-4 py-3.5 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
-              />
+              <div className="relative flex items-center">
+                <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-lg">mail</span>
+                <input
+                  id="login-email"
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  placeholder={t("login_email_placeholder")}
+                  className="w-full h-12 pl-10 pr-4 bg-surface rounded-lg border border-outline-variant focus-ring font-body-md text-on-surface"
+                />
+              </div>
             </div>
 
             <div>
-              <label htmlFor="login-password" className="block text-sm font-semibold text-dark-700 mb-1.5">
+              <label htmlFor="login-password" className="block font-label-sm text-on-surface-variant mb-1">
                 {t("login_password")}
               </label>
-              <input
-                id="login-password"
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                minLength={6}
-                placeholder={t("login_password_placeholder")}
-                className="w-full px-4 py-3.5 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
-              />
+              <div className="relative flex items-center">
+                <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-lg">lock</span>
+                <input
+                  id="login-password"
+                  type="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  minLength={6}
+                  placeholder={t("login_password_placeholder")}
+                  className="w-full h-12 pl-10 pr-4 bg-surface rounded-lg border border-outline-variant focus-ring font-body-md text-on-surface"
+                />
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold text-lg shadow-lg shadow-primary-500/20 hover:from-primary-600 hover:to-primary-700 disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+              className="w-full h-12 bg-secondary hover:brightness-95 text-on-secondary font-label-lg rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
+                <>
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   {t("login_logging_in")}
-                </span>
+                </>
               ) : (
-                t("login_btn")
+                <>
+                  {t("login_btn")}
+                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </>
               )}
             </button>
           </form>
-
-          <p className="mt-6 text-center text-sm text-dark-400">
-            {t("login_no_account")}{" "}
-            <Link to="/register" className="text-primary-600 font-semibold hover:text-primary-700">
-              {t("login_register_link")} →
-            </Link>
-          </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

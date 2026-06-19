@@ -51,31 +51,30 @@ export default function EmployerDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 animate-fade-in-up">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-dark-900">
+          <h1 className="font-display-md md:font-display-lg font-bold text-primary">
             {t("nav_dashboard")}
           </h1>
-          <p className="mt-1 text-dark-500">
+          <p className="font-body-lg text-on-surface-variant mt-1">
             {t("dash_manage")}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <Link
             to="/workers"
-            className="px-6 py-3 rounded-xl bg-primary-50 text-primary-700 font-bold border border-primary-200 hover:bg-primary-100 transition-all active:scale-95"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 h-12 rounded-lg bg-surface-container-lowest border-2 border-primary text-primary font-label-lg font-bold hover:bg-surface-container transition-colors"
           >
+            <span className="material-symbols-outlined text-lg">groups</span>
             {t("dash_browse_workers")}
           </Link>
           <Link
             to="/post-job"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold shadow-lg shadow-accent-500/20 hover:from-accent-600 hover:to-accent-700 transition-all active:scale-95 flex items-center gap-2"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 h-12 rounded-lg bg-primary hover:brightness-95 text-on-primary font-label-lg font-bold shadow-md transition-all"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <span className="material-symbols-outlined text-lg">add_circle</span>
             {t("dash_post_new")}
           </Link>
         </div>
@@ -83,33 +82,46 @@ export default function EmployerDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-        <div className="bg-white rounded-xl border border-dark-100 p-4 sm:p-5">
-          <p className="text-2xl sm:text-3xl font-extrabold text-dark-900">{jobs.length}</p>
-          <p className="text-sm text-dark-400 font-medium">{t("dash_total")}</p>
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
+          <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center mb-1">
+             <span className="material-symbols-outlined icon-fill">work</span>
+          </div>
+          <p className="font-display-sm font-bold text-primary">{jobs.length}</p>
+          <p className="font-label-md text-on-surface-variant">{t("dash_total")}</p>
         </div>
-        <div className="bg-white rounded-xl border border-dark-100 p-4 sm:p-5">
-          <p className="text-2xl sm:text-3xl font-extrabold text-accent-600">
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
+          <div className="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-1">
+             <span className="material-symbols-outlined icon-fill">check_circle</span>
+          </div>
+          <p className="font-display-sm font-bold text-secondary">
             {jobs.filter((j) => !j.isSuspicious).length}
           </p>
-          <p className="text-sm text-dark-400 font-medium">{t("dash_active")}</p>
+          <p className="font-label-md text-on-surface-variant">{t("dash_active")}</p>
         </div>
-        <div className="bg-white rounded-xl border border-dark-100 p-4 sm:p-5">
-          <p className="text-2xl sm:text-3xl font-extrabold text-warning-600">
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
+          <div className="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center mb-1">
+             <span className="material-symbols-outlined icon-fill">warning</span>
+          </div>
+          <p className="font-display-sm font-bold text-error">
             {jobs.filter((j) => j.isSuspicious).length}
           </p>
-          <p className="text-sm text-dark-400 font-medium">{t("dash_flagged")}</p>
+          <p className="font-label-md text-on-surface-variant">{t("dash_flagged")}</p>
         </div>
-        <div className="bg-white rounded-xl border border-dark-100 p-4 sm:p-5">
-          <p className="text-2xl sm:text-3xl font-extrabold text-primary-600">
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
+          <div className="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center mb-1">
+             <span className="material-symbols-outlined icon-fill">handshake</span>
+          </div>
+          <p className="font-display-sm font-bold text-tertiary">
             {hiredCount}
           </p>
-          <p className="text-sm text-dark-400 font-medium">{t("workers_hired")}</p>
+          <p className="font-label-md text-on-surface-variant">{t("workers_hired")}</p>
         </div>
       </div>
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-danger-500/10 border border-danger-500/20 text-danger-600 font-medium">
+        <div className="mb-6 p-4 rounded-xl bg-error-container border border-error/20 text-error font-body-md flex items-center gap-2">
+          <span className="material-symbols-outlined text-xl">error</span>
           {error}
         </div>
       )}
@@ -118,16 +130,14 @@ export default function EmployerDashboard() {
       {loading && (
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl p-5 border border-dark-100">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="skeleton h-5 w-1/3 mb-2" />
-                  <div className="skeleton h-4 w-1/4" />
-                </div>
-                <div className="flex gap-2">
-                  <div className="skeleton h-9 w-16" />
-                  <div className="skeleton h-9 w-16" />
-                </div>
+            <div key={i} className="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-sm flex items-center justify-between">
+              <div className="flex-1">
+                <div className="skeleton h-5 w-1/3 mb-2" />
+                <div className="skeleton h-4 w-1/4" />
+              </div>
+              <div className="flex gap-2">
+                <div className="skeleton h-10 w-20 rounded-lg" />
+                <div className="skeleton h-10 w-20 rounded-lg" />
               </div>
             </div>
           ))}
@@ -140,52 +150,66 @@ export default function EmployerDashboard() {
           {jobs.map((job) => (
             <div
               key={job._id}
-              className="bg-white rounded-xl border border-dark-100 p-5 hover:shadow-md transition-shadow"
+              className="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-5 hover:shadow-md transition-shadow flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
             >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Link
-                      to={`/jobs/${job._id}`}
-                      className="text-lg font-bold text-dark-900 hover:text-primary-600 transition-colors truncate"
-                    >
-                      {job.title}
-                    </Link>
-                    {job.isSuspicious && (
-                      <span className="shrink-0 px-2 py-0.5 rounded-full text-xs font-semibold bg-warning-500/10 text-warning-600">
-                        ⚠ Flagged
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-dark-400">
-                    <span className="font-semibold text-accent-600">₹{job.salary?.toLocaleString("en-IN")}</span>
-                    <span>•</span>
-                    <span>{job.skills?.join(", ")}</span>
-                    <span>•</span>
-                    <span>
-                      {new Date(job.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 shrink-0">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
                   <Link
-                    to={`/post-job?edit=${job._id}`}
-                    className="px-4 py-2 rounded-lg bg-dark-50 text-dark-600 font-semibold text-sm hover:bg-dark-100 transition"
+                    to={`/jobs/${job._id}`}
+                    className="font-headline-sm font-bold text-primary group-hover:underline transition-colors truncate"
                   >
-                    Edit
+                    {job.title}
                   </Link>
-                  <button
-                    onClick={() => handleDelete(job._id)}
-                    disabled={deletingId === job._id}
-                    className="px-4 py-2 rounded-lg bg-danger-500/10 text-danger-600 font-semibold text-sm hover:bg-danger-500/20 transition disabled:opacity-50"
-                  >
-                    {deletingId === job._id ? "..." : "Delete"}
-                  </button>
+                  {job.isSuspicious && (
+                    <span className="shrink-0 px-2.5 py-0.5 rounded-full font-label-sm font-semibold bg-error-container text-error flex items-center gap-1">
+                      <span className="material-symbols-outlined text-xs">warning</span> Flagged
+                    </span>
+                  )}
                 </div>
+                <div className="flex flex-wrap items-center gap-3 font-body-sm text-on-surface-variant">
+                  <span className="font-bold text-secondary flex items-center gap-0.5">
+                    <span className="material-symbols-outlined text-sm">payments</span>
+                    ₹{job.salary?.toLocaleString("en-IN")}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
+                  <span className="flex items-center gap-1">
+                     <span className="material-symbols-outlined text-sm">work</span>
+                     {job.skills?.slice(0,2).join(", ")}
+                     {job.skills?.length > 2 ? ` +${job.skills.length - 2}` : ""}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">schedule</span>
+                    {new Date(job.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 shrink-0 w-full md:w-auto">
+                <Link
+                  to={`/post-job?edit=${job._id}`}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-1 px-4 h-10 rounded-lg bg-surface-container text-on-surface font-label-md font-bold hover:bg-surface-container-highest transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">edit</span>
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDelete(job._id)}
+                  disabled={deletingId === job._id}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-1 px-4 h-10 rounded-lg bg-error-container text-error font-label-md font-bold hover:brightness-95 transition-all disabled:opacity-50"
+                >
+                  {deletingId === job._id ? (
+                    <span className="w-4 h-4 border-2 border-error/30 border-t-error rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-sm">delete</span>
+                      Delete
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           ))}
@@ -194,17 +218,18 @@ export default function EmployerDashboard() {
 
       {/* Empty State */}
       {!loading && jobs.length === 0 && !error && (
-        <div className="text-center py-20 animate-fade-in">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary-50 flex items-center justify-center text-4xl">
-            📋
+        <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-outline-variant/30 border-dashed animate-fade-in">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+            <span className="material-symbols-outlined text-4xl icon-fill">assignment</span>
           </div>
-          <h3 className="text-xl font-bold text-dark-800 mb-2">{t("dash_empty_title")}</h3>
-          <p className="text-dark-400 mb-6">{t("dash_empty_desc")}</p>
+          <h3 className="font-headline-sm font-bold text-primary mb-2">{t("dash_empty_title")}</h3>
+          <p className="font-body-md text-on-surface-variant mb-6 max-w-md mx-auto">{t("dash_empty_desc")}</p>
           <Link
             to="/post-job"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 text-white font-bold hover:bg-primary-600 transition-all"
+            className="inline-flex items-center gap-2 px-6 h-12 rounded-lg bg-primary text-on-primary font-label-lg font-bold hover:brightness-95 transition-all shadow-sm"
           >
-            {t("dash_post_first")} →
+            <span className="material-symbols-outlined">add</span>
+            {t("dash_post_first")}
           </Link>
         </div>
       )}

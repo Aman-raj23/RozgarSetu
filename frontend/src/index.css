@@ -1,49 +1,83 @@
 @import "tailwindcss";
 
 /* ========================================
-   RozgarSetu — Custom Theme & Global Styles
+   RozgarSetu — Stitch Material Design 3 Theme
    ======================================== */
 
 @theme {
-  --color-primary-50: #fef7ed;
-  --color-primary-100: #fdecd4;
-  --color-primary-200: #fad5a8;
-  --color-primary-300: #f6b871;
-  --color-primary-400: #f19238;
-  --color-primary-500: #ee7a14;
-  --color-primary-600: #df600a;
-  --color-primary-700: #b9480b;
-  --color-primary-800: #933910;
-  --color-primary-900: #773110;
+  /* ─── Primary (Deep Forest Green) ─── */
+  --color-primary: #012d1d;
+  --color-primary-container: #1b4332;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #86af99;
+  --color-primary-fixed: #c1ecd4;
+  --color-primary-fixed-dim: #a5d0b9;
+  --color-on-primary-fixed: #002114;
+  --color-on-primary-fixed-variant: #274e3d;
+  --color-inverse-primary: #a5d0b9;
 
-  --color-accent-50: #ecfdf5;
-  --color-accent-100: #d1fae5;
-  --color-accent-200: #a7f3d0;
-  --color-accent-300: #6ee7b7;
-  --color-accent-400: #34d399;
-  --color-accent-500: #10b981;
-  --color-accent-600: #059669;
-  --color-accent-700: #047857;
-  --color-accent-800: #065f46;
-  --color-accent-900: #064e3b;
+  /* ─── Secondary (Warm Amber) ─── */
+  --color-secondary: #8e4e14;
+  --color-secondary-container: #ffab69;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #783d01;
+  --color-secondary-fixed: #ffdcc4;
+  --color-secondary-fixed-dim: #ffb780;
+  --color-on-secondary-fixed: #2f1400;
+  --color-on-secondary-fixed-variant: #6f3800;
 
-  --color-dark-50: #f8fafc;
-  --color-dark-100: #f1f5f9;
-  --color-dark-200: #e2e8f0;
-  --color-dark-300: #cbd5e1;
-  --color-dark-400: #94a3b8;
-  --color-dark-500: #64748b;
-  --color-dark-600: #475569;
-  --color-dark-700: #334155;
-  --color-dark-800: #1e293b;
-  --color-dark-900: #0f172a;
-  --color-dark-950: #020617;
+  /* ─── Tertiary (Deep Green Accent) ─── */
+  --color-tertiary: #002d1c;
+  --color-tertiary-container: #00452e;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #75b393;
+  --color-tertiary-fixed: #b1f0ce;
+  --color-tertiary-fixed-dim: #95d4b3;
+  --color-on-tertiary-fixed: #002114;
+  --color-on-tertiary-fixed-variant: #0e5138;
 
-  --color-danger-500: #ef4444;
-  --color-danger-600: #dc2626;
+  /* ─── Surface System ─── */
+  --color-surface: #f8f9fa;
+  --color-surface-dim: #d9dadb;
+  --color-surface-bright: #f8f9fa;
+  --color-surface-variant: #e1e3e4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container: #edeeef;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+  --color-surface-tint: #3f6653;
+
+  /* ─── Background ─── */
+  --color-background: #f8f9fa;
+  --color-on-background: #191c1d;
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #414844;
+
+  /* ─── Outline ─── */
+  --color-outline: #717973;
+  --color-outline-variant: #c1c8c2;
+
+  /* ─── Error ─── */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  /* ─── Inverse ─── */
+  --color-inverse-surface: #2e3132;
+  --color-inverse-on-surface: #f0f1f2;
+
+  /* ─── Semantic Aliases (backward compat) ─── */
+  --color-danger-500: #ba1a1a;
+  --color-danger-600: #93000a;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
+  --color-chip-green: #D8F3DC;
+  --color-chip-green-border: #b1f0ce;
+  --color-chip-green-text: #00452e;
 
+  /* ─── Typography ─── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -60,15 +94,15 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-dark-50);
-    color: var(--color-dark-800);
+    background-color: var(--color-background);
+    color: var(--color-on-background);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    background-color: var(--color-primary-200);
-    color: var(--color-primary-900);
+    background-color: var(--color-primary-fixed);
+    color: var(--color-primary);
   }
 
   /* Scrollbar */
@@ -76,15 +110,44 @@
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-dark-100);
+    background: var(--color-surface-container-low);
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-dark-300);
+    background: var(--color-outline-variant);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-dark-400);
+    background: var(--color-outline);
   }
+}
+
+/* ========================================
+   Material Symbols
+   ======================================== */
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ========================================
+   Elevation System
+   ======================================== */
+
+.elevation-0 {
+  background-color: var(--color-background);
+}
+
+.elevation-1 {
+  background-color: var(--color-surface-container-lowest);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.elevation-2 {
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 /* ========================================
@@ -151,14 +214,14 @@
    ======================================== */
 
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .glass-dark {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(1, 45, 29, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -171,11 +234,44 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-dark-200) 25%,
-    var(--color-dark-100) 50%,
-    var(--color-dark-200) 75%
+    var(--color-surface-container-high) 25%,
+    var(--color-surface-container-low) 50%,
+    var(--color-surface-container-high) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
+}
+
+/* ========================================
+   Scrollbar Hide
+   ======================================== */
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ========================================
+   Safe Area
+   ======================================== */
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* ========================================
+   Focus Outline
+   ======================================== */
+
+.focus-ring:focus-within {
+  outline: 2px solid var(--color-secondary-container);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Input Ring for Stitch forms
+   ======================================== */
+
+.input-ring:focus {
+  outline: 2px solid var(--color-secondary-container);
+  outline-offset: 2px;
 }

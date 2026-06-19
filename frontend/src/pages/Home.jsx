@@ -11,10 +11,10 @@ export default function Home() {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [location, setLocation] = useState(null);
   const [locationName, setLocationName] = useState("");
-  const [locationStatus, setLocationStatus] = useState("idle"); // idle | loading | granted | denied
+  const [locationStatus, setLocationStatus] = useState("idle");
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    // Always request fresh location on mount
     if ("geolocation" in navigator) {
       setLocationStatus("loading");
       navigator.geolocation.getCurrentPosition(
@@ -26,7 +26,6 @@ export default function Home() {
         },
         (err) => {
           console.error("Geolocation error:", err);
-          // Fall back to saved location if fresh GPS fails
           const saved = localStorage.getItem("rozgarsetu_location");
           if (saved) {
             setLocation(JSON.parse(saved));
@@ -38,7 +37,6 @@ export default function Home() {
         { enableHighAccuracy: true, timeout: 10000 }
       );
     } else {
-      // Browser doesn't support geolocation, try cache
       const saved = localStorage.getItem("rozgarsetu_location");
       if (saved) {
         setLocation(JSON.parse(saved));
@@ -49,7 +47,6 @@ export default function Home() {
     }
   }, []);
 
-  // Resolve location name from coordinates
   useEffect(() => {
     if (location) {
       getLocationName(location.lat, location.lng).then((name) => {
@@ -89,6 +86,13 @@ export default function Home() {
     navigate(`/jobs?search=${encodeURIComponent(text)}`);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchText.trim()) {
+      navigate(`/jobs?search=${encodeURIComponent(searchText.trim())}`);
+    }
+  };
+
   const handleFindJobs = () => {
     const params = new URLSearchParams();
     if (selectedSkills.length > 0) params.set("skill", selectedSkills.join(","));
@@ -110,217 +114,183 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-dark-900 via-dark-800 to-primary-900 text-white">
-        {/* Background decoration */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/4 -right-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-1/4 -left-1/4 w-96 h-96 bg-accent-500/20 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-600/5 rounded-full" />
+    <div className="min-h-screen flex flex-col">
+      {/* ─── Hero Section ─── */}
+      <section className="relative rounded-none md:rounded-2xl md:mx-8 md:mt-6 overflow-hidden bg-primary text-on-primary min-h-[420px] flex flex-col justify-center px-6 md:px-12 py-12 shadow-md">
+        {/* Background image overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            alt=""
+            className="w-full h-full object-cover opacity-20 object-center"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8HDYw3m18KHGeyhw8eO1Qkj2ZiYzOz5s11EkpzFCAbUOPbLif52mTyEyDMVSeRv6AXmvH8M_qH4I-KyfwuXLESOwVIfzl0ytpahIfr-cbhuh5i6EePcvQY63mzhu5VI3axWWKUEi6zS_1vEXgk8QURujKoi7guq-LmTUPkNL4TymHhFd9fmUIsqcCQGHBkR-Y9UKjD45rODFTJ3MecDyiy3ny3qZrqYx5UJMAxzLWSMIUq_M0l01wQYCAJ0xODWBExWskgY3KlTNQ"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32">
-          <div className="text-center max-w-3xl mx-auto animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur text-sm font-medium text-primary-200 mb-6">
-              <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
-              {t("home_badge")}
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-              {t("home_title_1")}
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">
-                {t("home_title_2")}
-              </span>
-            </h1>
-
-            <p className="mt-6 text-lg sm:text-xl text-dark-300 max-w-2xl mx-auto leading-relaxed">
-              {t("home_subtitle")}
-            </p>
-
-            {/* Stats */}
-            <div className="flex items-center justify-center gap-8 sm:gap-12 mt-10">
-              <div>
-                <p className="text-3xl font-bold text-white">12+</p>
-                <p className="text-sm text-dark-400">{t("home_stat_skills")}</p>
-              </div>
-              <div className="w-px h-10 bg-white/20" />
-              <div>
-                <p className="text-3xl font-bold text-white">10km</p>
-                <p className="text-sm text-dark-400">{t("home_stat_radius")}</p>
-              </div>
-              <div className="w-px h-10 bg-white/20" />
-              <div>
-                <p className="text-3xl font-bold text-white">100%</p>
-                <p className="text-sm text-dark-400">{t("home_stat_free")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Wave divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 80L60 72C120 64 240 48 360 42.7C480 37 600 43 720 48C840 53 960 59 1080 56C1200 53 1320 43 1380 37L1440 32V80H1380C1320 80 1200 80 1080 80C960 80 840 80 720 80C600 80 480 80 360 80C240 80 120 80 60 80H0Z" fill="#f8fafc" />
-          </svg>
-        </div>
-      </section>
-
-      {/* Location + Voice Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 relative z-10">
-        <div className="bg-white rounded-2xl shadow-xl border border-dark-100 p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            {/* Location */}
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${locationStatus === "granted"
-                  ? "bg-accent-50 text-accent-600"
-                  : "bg-dark-100 text-dark-400"
-                }`}>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div>
-                {locationStatus === "granted" ? (
-                  <>
-                    <p className="text-sm font-semibold text-accent-700">
-                      {locationName || t("home_location_enabled")}
-                    </p>
-                    <p className="text-xs text-dark-400">
-                      {locationName ? t("home_location_enabled") : `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
-                    </p>
-                  </>
-                ) : locationStatus === "loading" ? (
-                  <p className="text-sm text-dark-500">{t("home_location_loading")}</p>
-                ) : locationStatus === "denied" ? (
-                  <>
-                    <p className="text-sm font-semibold text-danger-600">{t("home_location_denied")}</p>
-                    <p className="text-xs text-dark-400">{t("home_location_denied_sub")}</p>
-                  </>
-                ) : (
-                  <button
-                    onClick={requestLocation}
-                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
-                  >
-                    {t("home_enable_location")}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Voice Search */}
-            <VoiceSearch onResult={handleVoiceResult} />
-          </div>
-        </div>
-      </section>
-
-      {/* Skill Selection */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-dark-900">
-            {t("home_what_can_you_do")}
-          </h2>
-          <p className="mt-2 text-dark-500">
-            {t("home_select_skills_sub")}
+        <div className="relative z-10 max-w-2xl">
+          <h1 className="text-3xl md:text-[40px] font-bold leading-tight tracking-tight mb-4">
+            {t("home_title_1")} <br />{t("home_title_2")}
+          </h1>
+          <p className="text-lg text-on-primary/90 mb-8 max-w-lg leading-relaxed">
+            {t("home_subtitle")}
           </p>
-        </div>
 
+          {/* Role Switcher */}
+          <div className="bg-surface-container-lowest/10 backdrop-blur-sm p-1 rounded-xl inline-flex w-full md:w-auto mb-8 border border-outline-variant/30">
+            <button
+              onClick={handleFindJobs}
+              className="flex-1 md:flex-none px-6 py-3 rounded-lg bg-primary-container text-on-primary-container font-semibold text-sm shadow-sm transition-all text-center"
+            >
+              <span className="material-symbols-outlined text-lg align-middle mr-1">handyman</span>
+              I am a Worker
+            </button>
+            <button
+              onClick={handleFindWorkers}
+              className="flex-1 md:flex-none px-6 py-3 rounded-lg text-on-primary/80 hover:bg-surface-container-lowest/5 font-semibold text-sm transition-all text-center"
+            >
+              <span className="material-symbols-outlined text-lg align-middle mr-1">storefront</span>
+              I want to Hire
+            </button>
+          </div>
+
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="relative max-w-xl w-full">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="w-full pl-12 pr-14 py-4 rounded-xl bg-surface-container-lowest text-on-surface text-base border-0 focus:ring-2 focus:ring-secondary focus:outline-none placeholder:text-on-surface-variant/60 shadow-lg"
+              placeholder={t("jobs_search_placeholder")}
+              type="text"
+            />
+            <VoiceSearch
+              onResult={handleVoiceResult}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            />
+          </form>
+        </div>
+      </section>
+
+      {/* ─── Location Status Bar ─── */}
+      <div className="max-w-[1280px] mx-auto w-full px-4 md:px-8 mt-6">
+        <div className="elevation-1 rounded-xl p-4 flex items-center gap-3 border border-outline-variant/30">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+            locationStatus === "granted" ? "bg-tertiary-fixed text-tertiary" : "bg-surface-container text-on-surface-variant"
+          }`}>
+            <span className="material-symbols-outlined">my_location</span>
+          </div>
+          <div className="flex-1">
+            {locationStatus === "granted" ? (
+              <>
+                <p className="text-sm font-semibold text-primary">
+                  {locationName || t("home_location_enabled")}
+                </p>
+                <p className="text-xs text-on-surface-variant">
+                  {locationName ? t("home_location_enabled") : `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
+                </p>
+              </>
+            ) : locationStatus === "loading" ? (
+              <p className="text-sm text-on-surface-variant">{t("home_location_loading")}</p>
+            ) : locationStatus === "denied" ? (
+              <>
+                <p className="text-sm font-semibold text-error">{t("home_location_denied")}</p>
+                <p className="text-xs text-on-surface-variant">{t("home_location_denied_sub")}</p>
+              </>
+            ) : (
+              <button onClick={requestLocation} className="text-sm font-semibold text-secondary hover:underline">
+                {t("home_enable_location")}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Popular Skills (Bento Grid) ─── */}
+      <section className="max-w-[1280px] mx-auto w-full px-4 md:px-8 mt-10">
+        <div className="flex justify-between items-end mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold text-on-background">{t("home_what_can_you_do")}</h2>
+            <p className="text-on-surface-variant mt-1">{t("home_select_skills_sub")}</p>
+          </div>
+        </div>
         <SkillSelector onSelect={handleSkillSelect} selected={selectedSkills} />
 
         {/* Action Buttons */}
-        <div className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-5">
+        <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 max-w-2xl mx-auto">
           <button
             onClick={handleFindJobs}
-            className="group relative flex-1 w-full max-w-xs px-8 py-4 sm:py-5 rounded-full bg-dark-900 text-white font-bold text-lg sm:text-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:bg-black active:scale-95 transition-all duration-300 overflow-hidden"
+            className="w-full sm:w-auto px-8 py-4 rounded-lg bg-secondary-container text-on-secondary-container font-semibold text-base hover:brightness-95 transition-all shadow-sm flex items-center justify-center gap-2 min-h-[48px]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              {selectedSkills.length > 0
-                ? `${selectedSkills.length} ${t("home_find_skill_jobs")}`
-                : t("home_find_jobs_btn")}
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </span>
+            <span className="material-symbols-outlined">work</span>
+            {selectedSkills.length > 0
+              ? `${selectedSkills.length} ${t("home_find_skill_jobs")}`
+              : t("home_find_jobs_btn")}
           </button>
-          
+          <span className="hidden sm:inline text-on-surface-variant text-sm font-medium">or</span>
           <button
             onClick={handleFindWorkers}
-            className="group flex-1 w-full max-w-xs px-8 py-4 sm:py-5 rounded-full bg-white text-dark-900 border border-dark-200 font-bold text-lg sm:text-xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary-200 active:scale-95 transition-all duration-300"
+            className="w-full sm:w-auto px-8 py-4 rounded-lg bg-surface-container-lowest border-2 border-primary text-primary font-semibold text-base hover:bg-surface-container-low transition-all flex items-center justify-center gap-2 min-h-[48px]"
           >
-            <span className="flex items-center justify-center gap-2 group-hover:text-primary-600 transition-colors">
-              {t("nav_workers")}
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </span>
+            <span className="material-symbols-outlined">groups</span>
+            {t("nav_workers")}
           </button>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="bg-dark-950 text-white py-20 sm:py-28 relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary-900/20 rounded-full blur-[100px]" />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">
+      {/* ─── How It Works ─── */}
+      <section className="mt-16 py-16 bg-primary text-on-primary">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
               {t("home_how_title")}
             </h2>
-            <p className="text-dark-400 text-lg">A simple and seamless process to connect workers and employers locally.</p>
           </div>
-          
-          <div className="grid sm:grid-cols-3 gap-6 lg:gap-10">
+
+          <div className="grid sm:grid-cols-3 gap-8 lg:gap-12">
             {[
-              {
-                title: t("home_step1_title"),
-                desc: t("home_step1_desc"),
-                icon: "🎯",
-                step: "01"
-              },
-              {
-                title: t("home_step2_title"),
-                desc: t("home_step2_desc"),
-                icon: "📍",
-                step: "02"
-              },
-              {
-                title: t("home_step3_title"),
-                desc: t("home_step3_desc"),
-                icon: "🤝",
-                step: "03"
-              },
+              { title: t("home_step1_title"), desc: t("home_step1_desc"), icon: "tune", num: "01" },
+              { title: t("home_step2_title"), desc: t("home_step2_desc"), icon: "location_on", num: "02" },
+              { title: t("home_step3_title"), desc: t("home_step3_desc"), icon: "call", num: "03" },
             ].map((item, i) => (
               <div
                 key={i}
-                className="group relative text-center p-8 lg:p-10 rounded-[2.5rem] bg-dark-900/50 border border-dark-800 backdrop-blur-sm hover:bg-dark-800/80 hover:border-primary-500/50 transition-all duration-300 hover:-translate-y-2"
+                className="group relative animate-fade-in-up p-8 rounded-xl transition-all duration-300 hover:-translate-y-2"
+                style={{
+                  animationDelay: `${i * 150}ms`,
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               >
-                <div className="absolute top-6 left-8 text-5xl font-black text-dark-800/50 group-hover:text-primary-900/30 transition-colors select-none">
-                  {item.step}
+                <div className="absolute top-6 right-8 text-5xl font-black select-none text-on-primary/5">
+                  {item.num}
                 </div>
-                
-                <div className="relative w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-dark-800 to-dark-900 border border-dark-700 flex items-center justify-center text-4xl mb-6 shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative z-10 drop-shadow-lg">{item.icon}</span>
+                <div className="w-14 h-14 rounded-xl bg-on-primary/10 backdrop-blur flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-2xl text-on-primary">{item.icon}</span>
                 </div>
-                
-                <h3 className="relative z-10 text-xl lg:text-2xl font-bold mb-3 text-white group-hover:text-primary-100 transition-colors">{item.title}</h3>
-                <p className="relative z-10 text-dark-400 leading-relaxed font-medium group-hover:text-dark-300">{item.desc}</p>
+                <h3 className="text-xl font-bold text-on-primary mb-3">{item.title}</h3>
+                <p className="text-on-primary/70 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-dark-950 text-dark-400 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-sm">
-            © {new Date().getFullYear()} RozgarSetu — {t("home_footer")}
-          </p>
+      {/* ─── Footer ─── */}
+      <footer className="w-full px-4 md:px-8 py-8 flex flex-col gap-4 bg-primary text-on-primary mt-auto">
+        <div className="max-w-[1280px] mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="material-symbols-outlined text-on-primary icon-fill text-2xl">handshake</span>
+              <span className="text-xl font-bold text-on-primary">RozgarSetu</span>
+            </div>
+            <p className="text-sm text-on-primary/80">© {new Date().getFullYear()} RozgarSetu — {t("home_footer")}</p>
+          </div>
+          <div className="flex flex-wrap gap-4 md:gap-8">
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Contact Us</a>
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Safety Tips</a>
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Jobs Directory</a>
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Workers Directory</a>
+          </div>
         </div>
       </footer>
     </div>

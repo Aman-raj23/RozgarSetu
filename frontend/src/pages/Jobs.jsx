@@ -1,261 +1,240 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 import API from "../api/axios";
 import JobCard from "../components/JobCard";
 import VoiceSearch from "../components/VoiceSearch";
 import { SKILLS } from "../components/SkillSelector";
-import { useLanguage } from "../context/LanguageContext";
 
 export default function Jobs() {
   const { t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [searchText, setSearchText] = useState(searchParams.get("search") || "");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [selectedSkill, setSelectedSkill] = useState(searchParams.get("skill") || "");
+  const [location, setLocation] = useState(null);
 
-  const lat = searchParams.get("lat");
-  const lng = searchParams.get("lng");
-
-  // Refresh location on mount so nearby search uses current coordinates
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          localStorage.setItem("rozgarsetu_location", JSON.stringify(loc));
-        },
-        () => {}, // keep existing cache if GPS fails
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    }
+    const saved = localStorage.getItem("rozgarsetu_location");
+    if (saved) setLocation(JSON.parse(saved));
+
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    if (lat && lng) setLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
   }, []);
 
-  const fetchJobs = useCallback(async () => {
+  const fetchJobs = async () => {
     setLoading(true);
-    setError("");
     try {
-      const location = JSON.parse(localStorage.getItem("rozgarsetu_location") || "null");
-      const userLat = lat || location?.lat;
-      const userLng = lng || location?.lng;
-
-      let response;
-      if (userLat && userLng) {
-        // Use nearby endpoint with recommendation engine
-        const params = { lat: userLat, lng: userLng, radius: 50 };
-        const skillFilter = selectedSkill || searchText;
-        if (skillFilter) params.skill = skillFilter;
-        response = await API.get("/jobs/nearby", { params });
-      } else {
-        // No location — get all jobs, pass skill filter if present
-        const params = {};
-        if (selectedSkill) params.skill = selectedSkill;
-        response = await API.get("/jobs", { params });
+      const params = {};
+      if (location) {
+        params.lat = location.lat;
+        params.lng = location.lng;
       }
+      if (selectedSkill) params.skill = selectedSkill;
+      if (search) params.search = search;
 
-      let results = response.data;
-
-      // Client-side text search filtering if needed
-      if (searchText && !selectedSkill) {
-        const lower = searchText.toLowerCase();
-        results = results.filter(
-          (j) =>
-            j.title?.toLowerCase().includes(lower) ||
-            j.skills?.some((s) => s.toLowerCase().includes(lower)) ||
-            j.description?.toLowerCase().includes(lower)
-        );
+      const endpoint = location ? "/jobs/nearby" : "/jobs";
+      const res = await API.get(endpoint, { params });
+      setJobs(res.data);
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+      try {
+        const res = await API.get("/jobs");
+        setJobs(res.data);
+      } catch (fallbackErr) {
+        console.error("Fallback also failed:", fallbackErr);
       }
-
-      // Client-side skill filtering as a safety net
-      if (selectedSkill && !userLat) {
-        const skillLower = selectedSkill.toLowerCase();
-        results = results.filter((j) =>
-          j.skills?.some((s) => s.toLowerCase() === skillLower)
-        );
-      }
-
-      setJobs(results);
-    } catch (err) {
-      console.error("Error fetching jobs:", err);
-      setError(err.response?.data?.message || "Failed to fetch jobs");
     } finally {
       setLoading(false);
     }
-  }, [lat, lng, selectedSkill, searchText]);
+  };
 
   useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchJobs();
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
+  }, [selectedSkill, search, location]);
 
   const handleVoiceResult = (text) => {
-    setSearchText(text);
-    setSelectedSkill("");
-    setSearchParams((prev) => {
-      prev.set("search", text);
-      prev.delete("skill");
-      return prev;
-    });
-  };
-
-  const handleSkillFilter = (skillName) => {
-    const newSkill = selectedSkill === skillName ? "" : skillName;
-    setSelectedSkill(newSkill);
-    setSearchText("");
-    setSearchParams((prev) => {
-      if (newSkill) {
-        prev.set("skill", newSkill);
-      } else {
-        prev.delete("skill");
-      }
-      prev.delete("search");
-      return prev;
-    });
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setSelectedSkill("");
-    setSearchParams((prev) => {
-      if (searchText) {
-        prev.set("search", searchText);
-      } else {
-        prev.delete("search");
-      }
-      prev.delete("skill");
-      return prev;
-    });
-    fetchJobs();
-  };
-
-  const jobCountText = () => {
-    if (loading) return t("jobs_searching");
-    if (jobs.length === 0) return t("jobs_none");
-    return `${jobs.length} ${jobs.length !== 1 ? t("jobs_jobs") : t("jobs_job")} ${t("jobs_found")}`;
+    setSearch(text);
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header */}
-      <div className="mb-8 animate-fade-in-up">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-dark-900">
-          {t("jobs_title")}
-        </h1>
-        <p className="mt-2 text-dark-500">{jobCountText()}</p>
+    <div className="min-h-screen flex flex-col">
+      {/* Mobile Search Bar */}
+      <div className="md:hidden px-4 py-3 bg-surface sticky top-16 z-40 shadow-sm flex items-center gap-3">
+        <div className="relative flex-1">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full h-12 pl-10 pr-12 rounded-full border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary-container focus:border-secondary-container text-base"
+            placeholder={t("jobs_search_placeholder")}
+            type="text"
+          />
+          <VoiceSearch
+            onResult={handleVoiceResult}
+            className="absolute right-2 top-1/2 -translate-y-1/2 [&_button]:p-2 [&_button]:rounded-full"
+          />
+        </div>
       </div>
 
-      {/* Search Bar + Voice */}
-      <div className="bg-white rounded-2xl shadow-sm border border-dark-100 p-4 sm:p-6 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-        <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
-          <div className="flex-1 relative">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              value={searchText}
-              onChange={handleSearchChange}
-              placeholder={t("jobs_search_placeholder")}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-dark-50 border border-dark-200 text-dark-800 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-6 py-3.5 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 transition-all shadow-sm"
-          >
-            {t("jobs_search_btn")}
-          </button>
-          <VoiceSearch onResult={handleVoiceResult} />
-        </form>
-      </div>
-
-      {/* Skill Filters (horizontal scroll) */}
-      <div className="mb-8 overflow-x-auto pb-2 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-        <div className="flex gap-2 min-w-max">
-          <button
-            onClick={() => {
-              setSelectedSkill("");
-              setSearchText("");
-              setSearchParams({});
-            }}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
-              !selectedSkill
-                ? "bg-primary-500 text-white shadow-sm"
-                : "bg-white text-dark-600 border border-dark-200 hover:border-primary-300"
-            }`}
-          >
-            {t("jobs_all")}
-          </button>
-          {SKILLS.map((skill) => (
+      <main className="flex-1 max-w-[1280px] mx-auto w-full flex flex-col md:flex-row gap-8 px-4 md:px-8 py-8">
+        {/* ─── Sidebar Filters (Desktop) ─── */}
+        <aside className="hidden md:flex w-64 flex-shrink-0 flex-col gap-6 bg-surface-container-lowest p-5 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 h-fit sticky top-24">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="font-semibold text-xl text-primary">Filters</h2>
             <button
-              key={skill.name}
-              onClick={() => handleSkillFilter(skill.name)}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                selectedSkill === skill.name
-                  ? "bg-primary-500 text-white shadow-sm"
-                  : "bg-white text-dark-600 border border-dark-200 hover:border-primary-300"
-              }`}
+              onClick={() => { setSelectedSkill(""); setSearch(""); }}
+              className="text-secondary text-xs font-medium underline"
             >
-              <span>{skill.icon}</span>
-              {t(`skill_${skill.name}`)}
+              Clear All
             </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Error */}
-      {error && (
-        <div className="mb-6 p-4 rounded-xl bg-danger-500/10 border border-danger-500/20 text-danger-600 font-medium animate-fade-in">
-          {error}
-        </div>
-      )}
-
-      {/* Loading Skeletons */}
-      {loading && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 border border-dark-100">
-              <div className="skeleton h-5 w-3/4 mb-3" />
-              <div className="skeleton h-8 w-1/3 mb-3" />
-              <div className="flex gap-2 mb-4">
-                <div className="skeleton h-6 w-16" />
-                <div className="skeleton h-6 w-20" />
-              </div>
-              <div className="skeleton h-4 w-1/2 mb-4" />
-              <div className="flex gap-2">
-                <div className="skeleton h-11 flex-1" />
-                <div className="skeleton h-11 flex-1" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Job Cards */}
-      {!loading && jobs.length > 0 && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs.map((job, index) => (
-            <JobCard key={job._id} job={job} index={index} />
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && jobs.length === 0 && !error && (
-        <div className="text-center py-20 animate-fade-in">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-dark-100 flex items-center justify-center text-4xl">
-            🔍
           </div>
-          <h3 className="text-xl font-bold text-dark-800 mb-2">{t("jobs_empty_title")}</h3>
-          <p className="text-dark-400 max-w-md mx-auto">
-            {t("jobs_empty_desc")}
-          </p>
+
+          {/* Search */}
+          <div>
+            <h3 className="text-sm font-semibold text-on-surface mb-2">Search</h3>
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 rounded-lg border border-outline-variant bg-surface focus:ring-2 focus:ring-secondary-container focus:border-secondary-container text-sm"
+                placeholder={t("jobs_search_placeholder")}
+                type="text"
+              />
+            </div>
+            <VoiceSearch onResult={handleVoiceResult} className="mt-2" />
+          </div>
+
+          {/* Skills Filter */}
+          <div className="pt-4 border-t border-surface-variant">
+            <h3 className="text-sm font-semibold text-on-surface mb-3">Skills</h3>
+            <div className="flex flex-col gap-1.5">
+              <label
+                className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                  selectedSkill === "" ? "bg-surface-container-high" : "hover:bg-surface-container"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="skill"
+                  checked={selectedSkill === ""}
+                  onChange={() => setSelectedSkill("")}
+                  className="w-4 h-4 text-secondary border-outline-variant focus:ring-secondary"
+                />
+                <span className="text-sm text-on-surface font-medium">{t("jobs_all")}</span>
+              </label>
+              {SKILLS.map((skill) => (
+                <label
+                  key={skill.name}
+                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                    selectedSkill === skill.name ? "bg-surface-container-high" : "hover:bg-surface-container"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="skill"
+                    checked={selectedSkill === skill.name}
+                    onChange={() => setSelectedSkill(skill.name)}
+                    className="w-4 h-4 text-secondary border-outline-variant focus:ring-secondary"
+                  />
+                  <span className="material-symbols-outlined text-lg text-on-surface-variant">{skill.icon}</span>
+                  <span className="text-sm text-on-surface flex-1">{t(`skill_${skill.name}`) || skill.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* ─── Job Listings ─── */}
+        <section className="flex-1 flex flex-col gap-5">
+          {/* Header */}
+          <div className="hidden md:flex justify-between items-end mb-2">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-primary">{t("jobs_title")}</h1>
+              <p className="text-on-surface-variant mt-1">
+                {!loading && `${jobs.length} ${jobs.length === 1 ? t("jobs_job") : t("jobs_jobs")} ${t("jobs_found")}`}
+              </p>
+            </div>
+          </div>
+
+          {/* Mobile Skills Chips */}
+          <div className="md:hidden overflow-x-auto pb-2 hide-scrollbar">
+            <div className="flex gap-2 min-w-max">
+              <button
+                onClick={() => setSelectedSkill("")}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  selectedSkill === ""
+                    ? "bg-primary text-on-primary shadow-md"
+                    : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant"
+                }`}
+              >
+                {t("jobs_all")}
+              </button>
+              {SKILLS.map((skill) => (
+                <button
+                  key={skill.name}
+                  onClick={() => setSelectedSkill(selectedSkill === skill.name ? "" : skill.name)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-1.5 ${
+                    selectedSkill === skill.name
+                      ? "bg-secondary-container text-on-secondary-container shadow-md"
+                      : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant hover:border-primary/30"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">{skill.icon}</span>
+                  {t(`skill_${skill.name}`) || skill.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Job Cards Grid */}
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-5 h-64 skeleton" />
+              ))}
+            </div>
+          ) : jobs.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {jobs.map((job, i) => (
+                <JobCard key={job._id} job={job} index={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-surface-container-lowest rounded-xl border border-outline-variant/30 border-dashed">
+              <span className="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4 block">work_off</span>
+              <h3 className="text-xl font-bold text-on-surface mb-2">{t("jobs_empty_title")}</h3>
+              <p className="text-on-surface-variant mb-6 max-w-md mx-auto">{t("jobs_empty_desc")}</p>
+              <button
+                onClick={() => { setSearch(""); setSelectedSkill(""); }}
+                className="text-secondary font-semibold hover:underline"
+              >
+                Clear filters
+              </button>
+            </div>
+          )}
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="hidden md:flex w-full px-4 py-8 flex-col gap-4 bg-primary text-on-primary mt-auto">
+        <div className="max-w-[1280px] mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <span className="text-xl font-bold text-on-primary">RozgarSetu</span>
+            <p className="text-sm text-on-primary/80 mt-1">© {new Date().getFullYear()} RozgarSetu. Built for Bharat.</p>
+          </div>
+          <div className="flex gap-6">
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Contact Us</a>
+            <a className="text-xs text-on-primary/80 hover:text-secondary-container transition-all" href="#">Safety Tips</a>
+          </div>
         </div>
-      )}
+      </footer>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export default function App() {
     <LanguageProvider>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-dark-50">
+          <div className="min-h-screen bg-background text-on-background">
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
