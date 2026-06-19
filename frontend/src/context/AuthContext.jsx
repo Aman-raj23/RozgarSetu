@@ -19,6 +19,11 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  const sendOtp = async (formData) => {
+    const res = await API.post("/auth/send-otp", formData);
+    return res.data;
+  };
+
   const register = async (userData) => {
     const res = await API.post("/auth/register", userData);
     const { token: newToken, user: newUser } = res.data;
@@ -56,7 +61,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, register, login, logout, updateLocation, setUser }}
+      value={{ user, token, loading, sendOtp, register, login, logout, updateLocation, setUser }}
     >
       {children}
     </AuthContext.Provider>

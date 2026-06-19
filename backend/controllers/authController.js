@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Otp = require("../models/Otp");
+const { sendOtpEmail } = require("../utils/sendEmail");
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -8,11 +10,16 @@ const generateToken = (userId) => {
   });
 };
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-const register = async (req, res) => {
+// Generate a random 6-digit OTP
+const generateOtp = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// @desc    Send OTP to email for registration verification
+// @route   POST /api/auth/send-otp
+const sendOtp = async (req, res) => {
   try {
-    const { name, email, password, role, phone, location } = req.body;
+    const { name, email, password, role, phone } = req.body;
 
     // Validate required fields
     if (!name || !email || !password || !role || !phone) {
@@ -51,7 +58,88 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists with this email" });
     }
 
-    // Create user
+    // Rate limit: max 5 OTP requests per email (within the 10-min TTL window)
+    const otpCount = await Otp.countDocuments({ email });
+    if (otpCount >= 5) {
+      return res.status(429).json({
+        message: "Too many OTP requests. Please wait 10 minutes and try again.",
+      });
+    }
+
+    // Generate and save OTP
+    const otp = generateOtp();
+    await Otp.create({ email, otp });
+
+    // Send OTP email
+    await sendOtpEmail(email, otp, name);
+
+    res.status(200).json({
+      message: "OTP sent successfully! Please check your email.",
+    });
+  } catch (error) {
+    console.error("Send OTP error:", error.message);
+    res.status(500).json({ message: "Failed to send OTP. Please try again." });
+  }
+};
+
+// @desc    Verify OTP and register user
+// @route   POST /api/auth/register
+const register = async (req, res) => {
+  try {
+    const { name, email, password, role, phone, location, otp } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !password || !role || !phone || !otp) {
+      return res.status(400).json({
+        message: "All fields including OTP are required",
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address (e.g. name@example.com)",
+      });
+    }
+
+    // Validate phone number
+    const cleanPhone = phone.replace(/[\s\-\+]/g, "");
+    const phoneRegex = /^(\+?91)?[6-9]\d{9}$/;
+    if (!phoneRegex.test(cleanPhone)) {
+      return res.status(400).json({
+        message: "Please enter a valid 10-digit Indian phone number",
+      });
+    }
+
+    // Validate role
+    if (!["worker", "employer"].includes(role)) {
+      return res.status(400).json({
+        message: 'Role must be either "worker" or "employer"',
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists with this email" });
+    }
+
+    // Find the most recent OTP for this email
+    const otpRecord = await Otp.findOne({ email }).sort({ createdAt: -1 });
+    if (!otpRecord) {
+      return res.status(400).json({
+        message: "OTP expired or not found. Please request a new OTP.",
+      });
+    }
+
+    // Verify OTP
+    const isOtpValid = await otpRecord.compareOtp(otp);
+    if (!isOtpValid) {
+      return res.status(400).json({ message: "Invalid OTP. Please try again." });
+    }
+
+    // OTP verified — Create user
     const user = await User.create({
       name,
       email,
@@ -60,6 +148,9 @@ const register = async (req, res) => {
       phone,
       location: location || { lat: 0, lng: 0 },
     });
+
+    // Clean up all OTPs for this email
+    await Otp.deleteMany({ email });
 
     const token = generateToken(user._id);
 
@@ -219,4 +310,4 @@ const markNotificationsRead = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe, updateProfile, markNotificationsRead };
+module.exports = { sendOtp, register, login, getMe, updateProfile, markNotificationsRead };

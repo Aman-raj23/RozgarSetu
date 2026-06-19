@@ -1,0 +1,80 @@
+const nodemailer = require("nodemailer");
+
+/**
+ * Send OTP verification email
+ * @param {string} to - Recipient email address
+ * @param {string} otp - 6-digit OTP code
+ * @param {string} userName - User's name for personalization
+ */
+const sendOtpEmail = async (to, otp, userName = "User") => {
+  // Create transporter inside function so env vars are loaded
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  // Verify connection first
+  await transporter.verify();
+  console.log("✅ SMTP connection verified for:", process.env.EMAIL_USER);
+
+  const mailOptions = {
+    from: `"RozgarSetu" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: "🔐 RozgarSetu — Email Verification OTP",
+    html: `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #ee7a14, #f59e0b); padding: 32px 24px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+            🌾 RozgarSetu
+          </h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">
+            Connecting Workers & Employers Across Bharat
+          </p>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 32px 24px;">
+          <p style="color: #374151; font-size: 16px; margin: 0 0 8px;">
+            Hello <strong>${userName}</strong>,
+          </p>
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0 0 24px;">
+            Thank you for registering on RozgarSetu! Please use the verification code below to complete your registration:
+          </p>
+
+          <!-- OTP Box -->
+          <div style="text-align: center; margin: 24px 0;">
+            <div style="display: inline-block; background: #fef3c7; border: 2px dashed #f59e0b; border-radius: 12px; padding: 16px 40px;">
+              <span style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #92400e; font-family: 'Courier New', monospace;">
+                ${otp}
+              </span>
+            </div>
+          </div>
+
+          <p style="color: #ef4444; font-size: 13px; text-align: center; margin: 16px 0 0;">
+            ⏱️ This code expires in <strong>10 minutes</strong>. Do not share it with anyone.
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #f9fafb; padding: 16px 24px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+            If you didn't request this, please ignore this email.
+          </p>
+          <p style="color: #9ca3af; font-size: 11px; margin: 8px 0 0;">
+            © ${new Date().getFullYear()} RozgarSetu. All rights reserved.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  console.log("📧 OTP email sent to:", to, "| MessageId:", info.messageId);
+};
+
+module.exports = { sendOtpEmail };
