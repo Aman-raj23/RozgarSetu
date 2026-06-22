@@ -133,8 +133,15 @@ const register = async (req, res) => {
       });
     }
 
-    // Verify OTP
-    const isOtpValid = await otpRecord.compareOtp(otp);
+    // Verify OTP — ensure it's a string for bcrypt comparison
+    const otpString = otp.toString().trim();
+    console.log(`[OTP Debug] email: ${email}, received otp: "${otpString}" (type: ${typeof otpString}, len: ${otpString.length})`);
+    console.log(`[OTP Debug] stored hash: ${otpRecord.otp}`);
+    console.log(`[OTP Debug] record createdAt: ${otpRecord.createdAt}`);
+    
+    const isOtpValid = await otpRecord.compareOtp(otpString);
+    console.log(`[OTP Debug] compareOtp result: ${isOtpValid}`);
+    
     if (!isOtpValid) {
       return res.status(400).json({ message: "Invalid OTP. Please try again." });
     }
