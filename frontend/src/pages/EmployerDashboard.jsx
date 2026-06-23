@@ -108,8 +108,8 @@ export default function EmployerDashboard() {
           <p className="font-label-md text-on-surface-variant">{t("dash_flagged")}</p>
         </div>
         <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
-          <div className="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center mb-1">
-             <span className="material-symbols-outlined icon-fill">handshake</span>
+          <div className="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center mb-1 p-1.5">
+             <img src="/logo.png" alt="Logo" className="w-full h-full object-contain rounded" />
           </div>
           <p className="font-display-sm font-bold text-tertiary">
             {hiredCount}
