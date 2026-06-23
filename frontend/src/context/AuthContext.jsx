@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load from sessionStorage on mount (fresh start on new tab/window)
   useEffect(() => {
     const savedToken = sessionStorage.getItem("rozgarsetu_token");
     const savedUser = sessionStorage.getItem("rozgarsetu_user");
