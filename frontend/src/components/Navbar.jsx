@@ -45,8 +45,8 @@ export default function Navbar() {
       {/* ─── Top App Bar ─── */}
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-8 h-16 shadow-sm bg-surface transition-colors">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group" onClick={() => setMobileOpen(false)}>
-          <span className="material-symbols-outlined text-primary text-3xl icon-fill">handshake</span>
+        <Link to="/" className="flex items-center gap-1 group" onClick={() => setMobileOpen(false)}>
+          <img src="/logo.png" alt="RozgarSetu Logo" className="w-11 h-11 object-contain rounded" />
           <span className="font-semibold text-xl md:text-2xl text-primary tracking-tight">RozgarSetu</span>
         </Link>
 
@@ -54,31 +54,28 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-1 h-full">
           <Link
             to="/"
-            className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${
-              isActive("/") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
-            }`}
+            className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${isActive("/") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
+              }`}
           >
             {t("nav_home")}
           </Link>
           {(!user || user.role !== "employer") && (
             <Link
               to="/jobs"
-              className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${
-                isActive("/jobs") || location.pathname.startsWith("/jobs/")
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-on-surface-variant"
-              }`}
+              className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${isActive("/jobs") || location.pathname.startsWith("/jobs/")
+                ? "text-primary border-b-2 border-primary"
+                : "text-on-surface-variant"
+                }`}
             >
               {t("nav_find_jobs")}
             </Link>
           )}
           <Link
             to="/workers"
-            className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${
-              isActive("/workers") || location.pathname.startsWith("/workers/")
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant"
-            }`}
+            className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${isActive("/workers") || location.pathname.startsWith("/workers/")
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant"
+              }`}
           >
             {t("nav_workers")}
           </Link>
@@ -86,17 +83,15 @@ export default function Navbar() {
             <>
               <Link
                 to="/dashboard"
-                className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${
-                  isActive("/dashboard") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
-                }`}
+                className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${isActive("/dashboard") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
+                  }`}
               >
                 {t("nav_dashboard")}
               </Link>
               <Link
                 to="/post-job"
-                className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${
-                  isActive("/post-job") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
-                }`}
+                className={`h-full flex items-center px-4 text-sm font-semibold transition-colors hover:bg-surface-container-high ${isActive("/post-job") ? "text-primary border-b-2 border-primary" : "text-on-surface-variant"
+                  }`}
               >
                 {t("nav_post_job")}
               </Link>

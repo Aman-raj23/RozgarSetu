@@ -174,9 +174,8 @@ export default function Home() {
       {/* ─── Location Status Bar ─── */}
       <div className="max-w-[1280px] mx-auto w-full px-4 md:px-8 mt-6">
         <div className="elevation-1 rounded-xl p-4 flex items-center gap-3 border border-outline-variant/30">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-            locationStatus === "granted" ? "bg-tertiary-fixed text-tertiary" : "bg-surface-container text-on-surface-variant"
-          }`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${locationStatus === "granted" ? "bg-tertiary-fixed text-tertiary" : "bg-surface-container text-on-surface-variant"
+            }`}>
             <span className="material-symbols-outlined">my_location</span>
           </div>
           <div className="flex-1">
