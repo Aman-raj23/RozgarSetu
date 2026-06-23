@@ -279,7 +279,7 @@ export default function Home() {
         <div className="max-w-[1280px] mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-on-primary icon-fill text-2xl">handshake</span>
+              <img src="/logo.png" alt="RozgarSetu Logo" className="w-7 h-7 object-contain rounded bg-white p-0.5" />
               <span className="text-xl font-bold text-on-primary">RozgarSetu</span>
             </div>
             <p className="text-sm text-on-primary/80">© {new Date().getFullYear()} RozgarSetu — {t("home_footer")}</p>
