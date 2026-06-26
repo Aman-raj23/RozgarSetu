@@ -265,7 +265,12 @@ Jobs are ranked using a weighted algorithm:
 - **Distance (30%)** — closer jobs score higher (Haversine formula)
 - **Salary (20%)** — higher salary jobs rank better
 
-
+### Fraud Detection
+Jobs are automatically flagged if:
+- Salary < ₹100/day or > ₹50,000/day
+- Description is missing or < 20 characters
+- Phone number is missing
+- Title contains suspicious keywords (lottery, MLM, etc.)
 
 ---
 
