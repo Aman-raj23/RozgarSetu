@@ -78,9 +78,9 @@ const sendOtp = async (req, res) => {
     });
   } catch (error) {
     console.error("Send OTP error:", error.message);
-    if (error.message.includes("SMTP_NOT_CONFIGURED")) {
+    if (error.message.includes("BREVO_NOT_CONFIGURED")) {
       return res.status(500).json({
-        message: "Email verification is not configured on this server. Please add EMAIL_USER and EMAIL_PASS environment variables.",
+        message: "Email service is not configured. Please add BREVO_API_KEY environment variable.",
       });
     }
     res.status(500).json({ message: `Failed to send OTP: ${error.message}` });
