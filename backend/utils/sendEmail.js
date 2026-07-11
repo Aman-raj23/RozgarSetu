@@ -7,6 +7,10 @@ const nodemailer = require("nodemailer");
  * @param {string} userName - User's name for personalization
  */
 const sendOtpEmail = async (to, otp, userName = "User") => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("SMTP_NOT_CONFIGURED: EMAIL_USER or EMAIL_PASS environment variable is missing on the server.");
+  }
+
   // Create transporter inside function so env vars are loaded
   const transporter = nodemailer.createTransport({
     service: "gmail",
