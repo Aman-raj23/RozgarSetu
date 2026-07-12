@@ -11,7 +11,7 @@
  */
 const sendOtpEmail = async (to, otp, userName = "User") => {
   const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.EMAIL_USER || "noreply@rozgarsetu.com";
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER;
 
   if (!apiKey) {
     throw new Error("BREVO_NOT_CONFIGURED: BREVO_API_KEY environment variable is missing on the server.");
