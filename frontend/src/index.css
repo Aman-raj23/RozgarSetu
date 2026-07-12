@@ -79,6 +79,66 @@
 
   /* ─── Typography ─── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ─── Spacing ─── */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 32px;
+}
+
+@utility font-display-lg {
+  font-size: 57px;
+  line-height: 64px;
+}
+@utility font-display-lg-mobile {
+  font-size: 45px;
+  line-height: 52px;
+}
+@utility font-headline-lg {
+  font-size: 32px;
+  line-height: 40px;
+}
+@utility font-headline-md {
+  font-size: 28px;
+  line-height: 36px;
+}
+@utility font-headline-sm, text-headline-sm {
+  font-size: 24px;
+  line-height: 32px;
+}
+@utility font-body-lg {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility font-body-md {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility font-body-sm {
+  font-size: 12px;
+  line-height: 16px;
+}
+@utility font-label-lg {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+@utility font-label-md {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+@utility font-label-sm {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+}
+@utility max-w-container-max {
+  max-width: 1200px;
 }
 
 /* ========================================
