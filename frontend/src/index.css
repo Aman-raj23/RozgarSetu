@@ -79,15 +79,6 @@
 
   /* ─── Typography ─── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-
-  /* ─── Spacing ─── */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-margin-mobile: 16px;
-  --spacing-margin-desktop: 32px;
 }
 
 @utility font-display-lg {
@@ -106,7 +97,11 @@
   font-size: 28px;
   line-height: 36px;
 }
-@utility font-headline-sm, text-headline-sm {
+@utility font-headline-sm {
+  font-size: 24px;
+  line-height: 32px;
+}
+@utility text-headline-sm {
   font-size: 24px;
   line-height: 32px;
 }

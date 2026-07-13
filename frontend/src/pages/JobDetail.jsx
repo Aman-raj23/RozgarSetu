@@ -39,7 +39,7 @@ export default function JobDetail() {
 
   if (loading) {
     return (
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+      <div className="max-w-container-max mx-auto px-4 md:px-8 py-6">
         <div className="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/30">
           <div className="skeleton h-8 w-3/4 mb-4" />
           <div className="skeleton h-10 w-1/3 mb-6" />
@@ -54,7 +54,7 @@ export default function JobDetail() {
 
   if (error) {
     return (
-      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+      <div className="max-w-container-max mx-auto px-4 md:px-8 py-6">
         <div className="text-center py-20">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-error-container text-error flex items-center justify-center text-4xl">
             <span className="material-symbols-outlined text-[40px]">error</span>
@@ -74,7 +74,7 @@ export default function JobDetail() {
   return (
     <div className="bg-background min-h-screen pb-safe">
       {/* ─── Header ─── */}
-      <header className="sticky top-16 md:static w-full z-40 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 shadow-sm bg-surface">
+      <header className="sticky top-16 md:static w-full z-40 flex justify-between items-center px-4 md:px-8 h-16 shadow-sm bg-surface">
         <div className="flex items-center gap-4">
           <Link to="/jobs" aria-label="Go Back" className="p-2 hover:bg-surface-container-high rounded-full transition-colors flex items-center justify-center">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
@@ -89,11 +89,11 @@ export default function JobDetail() {
       </header>
 
       {/* ─── Main Content Canvas ─── */}
-      <main className="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-md flex flex-col gap-lg animate-fade-in-up">
+      <main className="w-full max-w-container-max mx-auto px-4 md:px-8 py-4 flex flex-col gap-6 animate-fade-in-up">
         
         {/* Safety Banner */}
         {job.isSuspicious ? (
-          <div className="elevation-1 rounded-xl p-md flex items-start gap-sm border-l-4 border-error bg-error-container">
+          <div className="elevation-1 rounded-xl p-4 flex items-start gap-2 border-l-4 border-error bg-error-container">
             <span className="material-symbols-outlined text-error mt-1 icon-fill">warning</span>
             <div>
               <h2 className="font-label-lg text-error mb-1">{t("detail_flagged")}</h2>
@@ -105,7 +105,7 @@ export default function JobDetail() {
             </div>
           </div>
         ) : (
-          <div className="elevation-1 rounded-xl p-md flex items-start gap-sm border-l-4 border-surface-tint bg-primary-fixed">
+          <div className="elevation-1 rounded-xl p-4 flex items-start gap-2 border-l-4 border-surface-tint bg-primary-fixed">
             <span className="material-symbols-outlined text-primary mt-1 icon-fill">verified_user</span>
             <div>
               <h2 className="font-label-lg text-primary mb-1">Verified Employer</h2>
@@ -114,12 +114,12 @@ export default function JobDetail() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-lg">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* ─── Left Column: Job Core Info ─── */}
-          <div className="md:col-span-8 flex flex-col gap-lg">
+          <div className="md:col-span-8 flex flex-col gap-6">
             
             {/* Job Header Card */}
-            <section className="elevation-1 rounded-xl p-lg flex flex-col gap-md">
+            <section className="elevation-1 rounded-xl p-6 flex flex-col gap-4">
               <div className="flex justify-between items-start">
                 <div>
                   <h1 className="font-display-lg-mobile md:font-display-lg text-primary mb-2">{job.title}</h1>
@@ -172,7 +172,7 @@ export default function JobDetail() {
             </section>
 
             {/* Location Details Card */}
-            <section className="elevation-1 rounded-xl p-lg flex flex-col gap-md">
+            <section className="elevation-1 rounded-xl p-6 flex flex-col gap-4">
               <h3 className="font-headline-sm text-primary">Location Details</h3>
               <p className="font-body-md text-on-surface">
                 {locationName || `${job.location?.lat?.toFixed(4)}, ${job.location?.lng?.toFixed(4)}`}
@@ -193,7 +193,7 @@ export default function JobDetail() {
 
             {/* Negotiation / Bidding Section */}
             {isWorker && (
-              <section className="elevation-1 rounded-xl p-lg flex flex-col gap-md border border-secondary-fixed">
+              <section className="elevation-1 rounded-xl p-6 flex flex-col gap-4 border border-secondary-fixed">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-secondary icon-fill">payments</span>
                   <h3 className="font-headline-sm text-primary">Propose Your Rate</h3>
@@ -220,11 +220,11 @@ export default function JobDetail() {
           </div>
 
           {/* ─── Right Column: Employer Profile & Actions ─── */}
-          <div className="md:col-span-4 flex flex-col gap-lg">
+          <div className="md:col-span-4 flex flex-col gap-6">
             
             {/* Employer Summary */}
             {job.employerId && (
-              <section className="elevation-1 rounded-xl p-lg flex flex-col gap-md items-center text-center">
+              <section className="elevation-1 rounded-xl p-6 flex flex-col gap-4 items-center text-center">
                 <div className="w-24 h-24 rounded-full bg-surface-container overflow-hidden mb-2 flex items-center justify-center text-primary-container text-4xl font-bold border-4 border-surface-container-lowest shadow-sm">
                   {job.employerId.name?.charAt(0).toUpperCase()}
                 </div>
@@ -249,7 +249,7 @@ export default function JobDetail() {
             )}
 
             {/* Fixed Action Buttons (Sticky on mobile, static on web) */}
-            <section className="elevation-2 md:elevation-1 rounded-t-xl md:rounded-xl p-lg bg-surface-container-lowest flex flex-col gap-4 fixed bottom-0 left-0 w-full md:static z-40 pb-safe md:pb-lg border-t border-outline-variant md:border-none">
+            <section className="elevation-2 md:elevation-1 rounded-t-xl md:rounded-xl p-6 bg-surface-container-lowest flex flex-col gap-4 fixed bottom-0 left-0 w-full md:static z-40 pb-safe md:pb-6 border-t border-outline-variant md:border-none">
               <h4 className="hidden md:block font-label-lg text-on-surface-variant text-center mb-2">Contact Employer</h4>
               <a 
                 href={`tel:${job.phone}`}
@@ -277,7 +277,7 @@ export default function JobDetail() {
       </main>
 
       {/* Footer */}
-      <footer className="hidden md:flex w-full px-margin-mobile py-lg flex-col gap-md bg-primary text-on-primary mt-12">
+      <footer className="hidden md:flex w-full px-4 py-6 flex-col gap-4 bg-primary text-on-primary mt-12">
         <div className="flex justify-between items-center max-w-container-max mx-auto w-full">
           <span className="text-headline-sm font-bold text-on-primary">RozgarSetu</span>
           <div className="flex gap-4">
