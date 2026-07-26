@@ -6,13 +6,13 @@ A full-stack MERN application that connects rural workers with nearby job opport
 
 ## 🚀 Features
 
-- **Worker & Employer roles** — register as a worker to find jobs or an employer to post them
-- **Location-based job search** — uses browser geolocation + Haversine formula to find jobs within 10 km
-- **Smart recommendations** — ranks jobs by skill match, distance, and salary
-- **Fraud detection** — flags suspicious jobs with unrealistic salary or missing details
-- **Voice search** — speak to search for jobs using Web Speech API
-- **Direct calling** — contact employers directly via phone (tel: links)
-- **Mobile-first design** — large buttons, simple navigation for rural users
+- **Worker & Employer roles** - register as a worker to find jobs or an employer to post them
+- **Location-based job search** - uses browser geolocation + Haversine formula to find jobs within 10 km
+- **Smart recommendations** - ranks jobs by skill match, distance, and salary
+- **Fraud detection** - flags suspicious jobs with unrealistic salary or missing details
+- **Voice search** - speak to search for jobs using Web Speech API
+- **Direct calling** - contact employers directly via phone (tel: links)
+- **Mobile-first design** - large buttons, simple navigation for rural users
 
 ---
 
