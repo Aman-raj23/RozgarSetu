@@ -68,6 +68,12 @@ const translations = {
   card_your_price: { en: "Your price", hi: "आपकी कीमत" },
   card_negotiate: { en: "Set your price", hi: "अपनी कीमत बताएँ" },
   card_call_with_price: { en: "Call & Ask", hi: "कॉल करें और बोलें" },
+  period_day: { en: "Day", hi: "दिन" },
+  period_month: { en: "Month", hi: "महीना" },
+  period_annum: { en: "Annum", hi: "वर्ष" },
+  per_day: { en: "per day", hi: "प्रति दिन" },
+  per_month: { en: "per month", hi: "प्रति माह" },
+  per_annum: { en: "per annum", hi: "प्रति वर्ष" },
 
   // ─── Post Job Form ───
   post_payment_label: { en: "Payment for this work (₹) *", hi: "इस काम की पेमेंट (₹) *" },

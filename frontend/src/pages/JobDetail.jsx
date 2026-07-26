@@ -184,13 +184,48 @@ export default function JobDetail() {
                   </div>
                   <div>
                     <span className="font-label-sm text-on-surface-variant block uppercase tracking-wider">Estimated Salary Range</span>
-                    <span className="text-xl sm:text-2xl font-black text-secondary">₹{job.salary?.toLocaleString("en-IN")} <span className="text-sm font-medium text-on-surface-variant">/ Day</span></span>
+                    <span className="text-xl sm:text-2xl font-black text-secondary">₹{job.salary?.toLocaleString("en-IN")} <span className="text-sm font-medium text-on-surface-variant">/ {t(`period_${job.salaryPeriod || "day"}`)}</span></span>
                   </div>
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-secondary/10 border border-secondary/20 text-secondary font-label-sm font-bold uppercase tracking-wider">
                   Negotiable Rate
                 </div>
               </div>
+
+              {/* Bidding Section (Moved here!) */}
+              {isWorker && (
+                <div className="p-5 rounded-2xl border border-secondary/20 bg-secondary-container/5 relative overflow-hidden flex flex-col gap-4">
+                  <div className="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-secondary icon-fill text-xl">payments</span>
+                    <h3 className="font-label-md font-extrabold text-primary">Propose Your Rate</h3>
+                  </div>
+                  <p className="font-body-sm text-on-surface-variant leading-relaxed">
+                    The employer is open to negotiation. Enter your expected rate to update your calling rate indicator.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="w-full focus-ring rounded-xl transition-shadow bg-surface-container-lowest">
+                      <label className="block font-label-xs text-on-surface-variant mb-1 ml-1 uppercase tracking-wider text-[10px]" htmlFor="bid-amount">
+                        Your Proposed Rate (₹ / {t(`period_${job.salaryPeriod || "day"}`)})
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-base">₹</span>
+                        <input 
+                          className="w-full h-11 pl-8 pr-4 rounded-xl border border-outline-variant bg-transparent text-on-surface font-semibold focus:border-secondary focus:ring-0 focus:outline-none transition-colors" 
+                          id="bid-amount" 
+                          placeholder={`e.g. ${job.salary + (job.salaryPeriod === "annum" ? 10000 : job.salaryPeriod === "month" ? 1000 : 50)}`} 
+                          type="number"
+                          value={askingPrice}
+                          onChange={(e) => setAskingPrice(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <button className="w-full sm:w-auto h-11 px-5 rounded-xl bg-primary text-on-primary font-label-md hover:brightness-95 transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                      Set Rate Indicator
+                    </button>
+                  </div>
+                </div>
+              )}
               
               {/* Skills Required */}
               <div className="flex flex-col gap-3">
@@ -253,38 +288,7 @@ export default function JobDetail() {
               </div>
             </section>
 
-            {/* Bidding Section */}
-            {isWorker && (
-              <section className="elevation-1 rounded-2xl p-6 md:p-8 flex flex-col gap-5 border border-secondary/20 bg-secondary-container/5 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-2.5 h-full bg-secondary"></div>
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-secondary icon-fill">payments</span>
-                  <h3 className="font-label-lg font-extrabold text-primary">Propose Your Rate</h3>
-                </div>
-                <p className="font-body-md text-on-surface-variant">
-                  The employer is open to negotiation. Enter your expected daily wage below to update your calling rate indicator.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 items-end">
-                  <div className="w-full focus-ring rounded-xl transition-shadow bg-surface-container-lowest">
-                    <label className="block font-label-sm text-on-surface-variant mb-1 ml-1 uppercase tracking-wider" htmlFor="bid-amount">Your Daily Wage (₹)</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-lg">₹</span>
-                      <input 
-                        className="w-full h-12 pl-8 pr-4 rounded-xl border border-outline-variant bg-transparent text-on-surface font-headline-sm focus:border-secondary focus:ring-0 focus:outline-none transition-colors" 
-                        id="bid-amount" 
-                        placeholder={`e.g. ${job.salary + 50}`} 
-                        type="number"
-                        value={askingPrice}
-                        onChange={(e) => setAskingPrice(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <button className="w-full sm:w-auto h-12 px-6 rounded-xl bg-primary text-on-primary font-label-md hover:brightness-95 transition-all shadow-sm active:scale-95">
-                    Set Rate Indicator
-                  </button>
-                </div>
-              </section>
-            )}
+
           </div>
 
           {/* ─── Right Column: Employer Profile & Actions ─── */}

@@ -21,12 +21,20 @@ const MIN_DESCRIPTION_LENGTH = 20;
 function detectFraud(jobData) {
   const reasons = [];
 
-  // Check salary
-  if (jobData.salary < MIN_SALARY) {
-    reasons.push(`Salary ₹${jobData.salary} is unrealistically low (minimum expected: ₹${MIN_SALARY}/day)`);
+  const period = jobData.salaryPeriod || "day";
+  let dailyEquivalent = jobData.salary;
+  if (period === "month") {
+    dailyEquivalent = jobData.salary / 30;
+  } else if (period === "annum") {
+    dailyEquivalent = jobData.salary / 365;
   }
-  if (jobData.salary > MAX_SALARY) {
-    reasons.push(`Salary ₹${jobData.salary} is unrealistically high (maximum expected: ₹${MAX_SALARY}/day)`);
+
+  // Check salary
+  if (dailyEquivalent < MIN_SALARY) {
+    reasons.push(`Salary ₹${jobData.salary}/${period} is unrealistically low (minimum expected: ₹${MIN_SALARY}/day equivalent)`);
+  }
+  if (dailyEquivalent > MAX_SALARY) {
+    reasons.push(`Salary ₹${jobData.salary}/${period} is unrealistically high (maximum expected: ₹${MAX_SALARY}/day equivalent)`);
   }
 
   // Check description

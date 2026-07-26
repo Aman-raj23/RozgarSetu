@@ -25,21 +25,30 @@ function rankJobs(jobs, userLat, userLng, userSkills = []) {
     const union = new Set([...normalizedUserSkills, ...jobSkills]);
     const skillScore = union.size > 0 ? intersection.length / union.size : 0;
 
+    let dailySalary = job.salary;
+    const period = job.salaryPeriod || "day";
+    if (period === "month") {
+      dailySalary = job.salary / 30;
+    } else if (period === "annum") {
+      dailySalary = job.salary / 365;
+    }
+
     return {
       ...job.toObject ? job.toObject() : job,
       distance: Math.round(distance * 10) / 10,
       skillScore,
+      dailySalary,
     };
   });
 
   // Find max distance and max salary for normalization
   const maxDistance = Math.max(...jobsWithMetrics.map((j) => j.distance), 1);
-  const maxSalary = Math.max(...jobsWithMetrics.map((j) => j.salary), 1);
+  const maxSalary = Math.max(...jobsWithMetrics.map((j) => j.dailySalary), 1);
 
   // Calculate final score
   const rankedJobs = jobsWithMetrics.map((job) => {
     const distanceScore = 1 - job.distance / maxDistance; // closer = higher
-    const salaryScore = job.salary / maxSalary; // higher salary = higher
+    const salaryScore = job.dailySalary / maxSalary; // higher salary = higher
 
     const relevanceScore =
       job.skillScore * 0.5 +

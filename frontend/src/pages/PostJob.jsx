@@ -17,6 +17,7 @@ export default function PostJob() {
     description: "",
     skills: [],
     salary: "",
+    salaryPeriod: "day",
     phone: user?.phone || "",
   });
   const [location, setLocation] = useState(null);
@@ -36,6 +37,7 @@ export default function PostJob() {
             description: j.description || "",
             skills: j.skills || [],
             salary: j.salary?.toString() || "",
+            salaryPeriod: j.salaryPeriod || "day",
             phone: j.phone || user?.phone || "",
           });
           setLocation(j.location || null);
@@ -261,19 +263,34 @@ export default function PostJob() {
             <label htmlFor="job-salary" className="block font-label-lg font-bold text-on-surface mb-2">
               {t("post_payment_label")} <span className="text-error">*</span>
             </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-4 font-headline-sm font-bold text-secondary">₹</span>
-              <input
-                id="job-salary"
-                type="number"
-                name="salary"
-                value={form.salary}
-                onChange={handleChange}
-                required
-                min="1"
-                placeholder={t("post_payment_placeholder")}
-                className="w-full h-12 pl-10 pr-4 rounded-lg bg-surface border border-outline-variant focus-ring font-body-md text-on-surface font-bold text-lg"
-              />
+            <div className="flex gap-3">
+              <div className="relative flex-1 flex items-center">
+                <span className="absolute left-4 font-headline-sm font-bold text-secondary">₹</span>
+                <input
+                  id="job-salary"
+                  type="number"
+                  name="salary"
+                  value={form.salary}
+                  onChange={handleChange}
+                  required
+                  min="1"
+                  placeholder={t("post_payment_placeholder")}
+                  className="w-full h-12 pl-10 pr-4 rounded-lg bg-surface border border-outline-variant focus-ring font-body-md text-on-surface font-bold text-lg"
+                />
+              </div>
+              <div className="relative">
+                <select
+                  name="salaryPeriod"
+                  value={form.salaryPeriod}
+                  onChange={handleChange}
+                  className="h-12 pl-4 pr-10 rounded-lg bg-surface border border-outline-variant focus-ring font-body-md text-on-surface font-bold min-w-[140px] appearance-none cursor-pointer"
+                >
+                  <option value="day">{t("per_day")}</option>
+                  <option value="month">{t("per_month")}</option>
+                  <option value="annum">{t("per_annum")}</option>
+                </select>
+                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">keyboard_arrow_down</span>
+              </div>
             </div>
           </div>
 

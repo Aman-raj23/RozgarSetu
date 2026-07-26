@@ -12,7 +12,7 @@ const createJob = async (req, res) => {
       return res.status(403).json({ message: "Only employers can post jobs" });
     }
 
-    const { title, description, skills, salary, location, phone } = req.body;
+    const { title, description, skills, salary, salaryPeriod, location, phone } = req.body;
 
     // Validate required fields
     if (!title || !description || !skills || salary === undefined || !location || !phone) {
@@ -26,13 +26,14 @@ const createJob = async (req, res) => {
     }
 
     // Run fraud detection
-    const fraudResult = detectFraud({ title, description, salary, phone });
+    const fraudResult = detectFraud({ title, description, salary, salaryPeriod, phone });
 
     const job = await Job.create({
       title,
       description,
       skills: Array.isArray(skills) ? skills : [skills],
       salary: Number(salary),
+      salaryPeriod: salaryPeriod || "day",
       location,
       employerId: req.user._id,
       phone,
@@ -158,7 +159,7 @@ const updateJob = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to update this job" });
     }
 
-    const { title, description, skills, salary, location, phone } = req.body;
+    const { title, description, skills, salary, salaryPeriod, location, phone } = req.body;
 
     // Build update object
     const updates = {};
@@ -166,6 +167,7 @@ const updateJob = async (req, res) => {
     if (description) updates.description = description;
     if (skills) updates.skills = Array.isArray(skills) ? skills : [skills];
     if (salary !== undefined) updates.salary = Number(salary);
+    if (salaryPeriod) updates.salaryPeriod = salaryPeriod;
     if (location) updates.location = location;
     if (phone) updates.phone = phone;
 
@@ -174,6 +176,7 @@ const updateJob = async (req, res) => {
       title: updates.title || job.title,
       description: updates.description || job.description,
       salary: updates.salary !== undefined ? updates.salary : job.salary,
+      salaryPeriod: updates.salaryPeriod || job.salaryPeriod,
       phone: updates.phone || job.phone,
     };
     const fraudResult = detectFraud(mergedData);

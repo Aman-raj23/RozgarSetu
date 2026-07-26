@@ -169,7 +169,7 @@ export default function EmployerDashboard() {
                 <div className="flex flex-wrap items-center gap-3 font-body-sm text-on-surface-variant">
                   <span className="font-bold text-secondary flex items-center gap-0.5">
                     <span className="material-symbols-outlined text-sm">payments</span>
-                    ₹{job.salary?.toLocaleString("en-IN")}
+                    ₹{job.salary?.toLocaleString("en-IN")} / {t(`period_${job.salaryPeriod || "day"}`)}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                   <span className="flex items-center gap-1">

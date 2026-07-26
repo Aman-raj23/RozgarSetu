@@ -25,6 +25,11 @@ const jobSchema = new mongoose.Schema(
       required: [true, "Salary is required"],
       min: [0, "Salary cannot be negative"],
     },
+    salaryPeriod: {
+      type: String,
+      enum: ["day", "month", "annum"],
+      default: "day",
+    },
     location: {
       lat: {
         type: Number,

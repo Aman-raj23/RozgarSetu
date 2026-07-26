@@ -75,7 +75,7 @@ export default function JobCard({ job, index = 0 }) {
       <div className="flex items-center gap-4 my-3 text-sm font-semibold">
         <div className="flex items-center gap-1 text-secondary font-bold">
           <span className="material-symbols-outlined text-[20px]">currency_rupee</span>
-          ₹{salary?.toLocaleString("en-IN")} / {t("card_offered")}
+          ₹{salary?.toLocaleString("en-IN")} / {t(`period_${job.salaryPeriod || "day"}`)}
         </div>
         {distance !== undefined && (
           <div className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs ${
