@@ -90,9 +90,17 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="login-password" className="block font-label-sm text-on-surface-variant mb-1">
-                {t("login_password")}
-              </label>
+              <div className="flex justify-between items-center mb-1">
+                <label htmlFor="login-password" className="font-label-sm text-on-surface-variant">
+                  {t("login_password")}
+                </label>
+                <Link
+                  to="/forgot-password"
+                  className="font-label-sm text-primary font-semibold hover:underline transition-colors"
+                >
+                  {t("login_forgot_password")}
+                </Link>
+              </div>
               <div className="relative flex items-center">
                 <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-lg">lock</span>
                 <input

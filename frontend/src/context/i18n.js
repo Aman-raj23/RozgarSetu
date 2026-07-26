@@ -131,6 +131,21 @@ const translations = {
   login_logging_in: { en: "Logging in...", hi: "लॉगिन हो रहा है..." },
   login_no_account: { en: "Don't have an account?", hi: "खाता नहीं है?" },
   login_register_link: { en: "Register here", hi: "यहाँ रजिस्टर करें" },
+  login_forgot_password: { en: "Forgot Password?", hi: "पासवर्ड भूल गए?" },
+
+  // ─── Forgot / Reset Password Page ───
+  forgot_title: { en: "Reset Your Password", hi: "अपना पासवर्ड रीसेट करें" },
+  forgot_subtitle: { en: "Enter your registered email address to receive an OTP", hi: "OTP प्राप्त करने के लिए अपना पंजीकृत ईमेल पता दर्ज करें" },
+  forgot_send_btn: { en: "Send Reset OTP", hi: "रीसेट OTP भेजें" },
+  forgot_sending: { en: "Sending OTP...", hi: "OTP भेजा जा रहा है..." },
+  forgot_back_to_login: { en: "Back to Login", hi: "लॉगिन पर वापस जाएँ" },
+  reset_title: { en: "Enter OTP & New Password", hi: "OTP और नया पासवर्ड दर्ज करें" },
+  reset_subtitle: { en: "We sent a 6-digit OTP to", hi: "हमने 6-अंकों का OTP भेजा है:" },
+  reset_otp_label: { en: "6-Digit OTP", hi: "6-अंकों का OTP" },
+  reset_new_password_label: { en: "New Password", hi: "नया पासवर्ड" },
+  reset_new_password_placeholder: { en: "Minimum 6 characters", hi: "कम से कम 6 अक्षर" },
+  reset_btn: { en: "Reset Password", hi: "पासवर्ड रीसेट करें" },
+  reset_success: { en: "Password reset successfully! Redirecting to login...", hi: "पासवर्ड सफलतापूर्वक रीसेट हो गया! लॉगिन पर ले जाया जा रहा है..." },
 
   // ─── Register Page ───
   reg_title: { en: "Create Account", hi: "खाता बनाएँ" },

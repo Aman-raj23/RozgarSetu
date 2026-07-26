@@ -322,4 +322,119 @@ const markNotificationsRead = async (req, res) => {
   }
 };
 
-module.exports = { sendOtp, register, login, getMe, updateProfile, markNotificationsRead };
+// @desc    Send OTP to email for password reset
+// @route   POST /api/auth/forgot-password
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address (e.g. name@example.com)",
+      });
+    }
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "No account found with this email address" });
+    }
+
+    // Rate limit: max 5 OTP requests per email
+    const otpCount = await Otp.countDocuments({ email });
+    if (otpCount >= 5) {
+      return res.status(429).json({
+        message: "Too many OTP requests. Please wait 10 minutes and try again.",
+      });
+    }
+
+    // Generate and save OTP
+    const otp = generateOtp();
+    await Otp.create({ email, otp });
+
+    // Send OTP email
+    await sendOtpEmail(email, otp, user.name);
+
+    res.status(200).json({
+      message: "Password reset OTP sent successfully! Please check your email.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error.message);
+    if (error.message.includes("BREVO_NOT_CONFIGURED")) {
+      return res.status(500).json({
+        message: "Email service is not configured. Please add BREVO_API_KEY environment variable.",
+      });
+    }
+    res.status(500).json({ message: `Failed to send OTP: ${error.message}` });
+  }
+};
+
+// @desc    Reset password using OTP
+// @route   POST /api/auth/reset-password
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        message: "Email, OTP, and new password are required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "New password must be at least 6 characters long",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the most recent OTP for this email
+    const otpRecord = await Otp.findOne({ email }).sort({ createdAt: -1 });
+    if (!otpRecord) {
+      return res.status(400).json({
+        message: "OTP expired or not found. Please request a new OTP.",
+      });
+    }
+
+    const otpString = otp.toString().trim();
+    const isOtpValid = await otpRecord.compareOtp(otpString);
+
+    if (!isOtpValid) {
+      return res.status(400).json({ message: "Invalid OTP. Please try again." });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    // Clean up OTPs for this email
+    await Otp.deleteMany({ email });
+
+    res.status(200).json({
+      message: "Password reset successfully! Please login with your new password.",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error.message);
+    res.status(500).json({ message: "Server error while resetting password" });
+  }
+};
+
+module.exports = {
+  sendOtp,
+  register,
+  login,
+  getMe,
+  updateProfile,
+  markNotificationsRead,
+  forgotPassword,
+  resetPassword,
+};
