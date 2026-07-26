@@ -161,7 +161,7 @@ const translations = {
   reg_role: { en: "I am a...", hi: "मैं हूँ..." },
   reg_worker: { en: "Worker", hi: "मज़दूर" },
   reg_worker_desc: { en: "I am looking for work", hi: "मुझे काम चाहिए" },
-  reg_hirer: { en: "Find Worker", hi: "मज़दूर खोजें" },
+  reg_hirer: { en: "Hirer", hi: "काम देने वाले" },
   reg_hirer_desc: { en: "I want to hire workers", hi: "मुझे मज़दूर चाहिए" },
   reg_btn: { en: "Create Account", hi: "खाता बनाएँ" },
   reg_creating: { en: "Creating account...", hi: "खाता बन रहा है..." },
