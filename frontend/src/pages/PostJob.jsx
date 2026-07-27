@@ -157,17 +157,23 @@ export default function PostJob() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label htmlFor="job-title" className="block font-label-lg font-bold text-on-surface mb-2">
-              Job Title <span className="text-error">*</span>
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="job-title" className="block font-label-lg font-bold text-on-surface">
+                Job Title <span className="text-error">*</span>
+              </label>
+              <span className={`font-label-sm font-semibold transition-colors ${form.title.length >= 25 ? "text-error" : "text-on-surface-variant"}`}>
+                {form.title.length}/25
+              </span>
+            </div>
             <input
               id="job-title"
               type="text"
               name="title"
               value={form.title}
               onChange={handleChange}
+              maxLength={25}
               required
-              placeholder="e.g. Electrician needed for house wiring"
+              placeholder="e.g. Electrician needed"
               className="w-full h-12 px-4 rounded-lg bg-surface border border-outline-variant focus-ring font-body-md text-on-surface"
             />
           </div>
@@ -194,7 +200,7 @@ export default function PostJob() {
             <label className="block font-label-lg font-bold text-on-surface mb-2">
               Skills Required <span className="text-error">*</span>
             </label>
-            
+
             {/* Selected Skills */}
             {form.skills.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4 p-3 rounded-lg bg-surface-container-low border border-outline-variant border-dashed">
@@ -215,7 +221,7 @@ export default function PostJob() {
                 ))}
               </div>
             )}
-            
+
             {/* Quick Skill Buttons */}
             <div className="flex flex-wrap gap-2 mb-3">
               {SKILLS.filter((s) => !form.skills.includes(s.name))
@@ -227,12 +233,12 @@ export default function PostJob() {
                     onClick={() => addSkill(skill.name)}
                     className="px-3 py-1.5 rounded-full font-label-sm font-medium bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center gap-1.5 border border-transparent hover:border-outline-variant"
                   >
-                    <span className="material-symbols-outlined text-sm">{skill.icon}</span> 
+                    <span className="material-symbols-outlined text-sm">{skill.icon}</span>
                     {skill.name}
                   </button>
                 ))}
             </div>
-            
+
             {/* Custom Skill Input */}
             <div className="flex gap-2">
               <input
