@@ -11,6 +11,49 @@ export default function Workers() {
   const [loading, setLoading] = useState(true);
   const [selectedSkill, setSelectedSkill] = useState("");
   const [search, setSearch] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all"); // "all" | "nearby"
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState("");
+
+  // Get user's location from localStorage or geolocation API
+  useEffect(() => {
+    const stored = localStorage.getItem("rozgarsetu_location");
+    if (stored) {
+      try {
+        const loc = JSON.parse(stored);
+        if (loc.lat && loc.lng) setUserLocation(loc);
+      } catch {}
+    }
+  }, []);
+
+  const requestLocation = () => {
+    setLocationError("");
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      setLocationFilter("all");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setUserLocation(loc);
+        localStorage.setItem("rozgarsetu_location", JSON.stringify(loc));
+        setLocationError("");
+      },
+      () => {
+        setLocationError("Location access denied. Showing all workers.");
+        setLocationFilter("all");
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
+
+  const handleLocationFilterChange = (filter) => {
+    setLocationFilter(filter);
+    if (filter === "nearby" && !userLocation) {
+      requestLocation();
+    }
+  };
 
   const fetchWorkers = async () => {
     setLoading(true);
@@ -18,7 +61,14 @@ export default function Workers() {
       const params = {};
       if (selectedSkill) params.skill = selectedSkill;
       if (search) params.search = search;
-      
+
+      // Add location params if filtering nearby
+      if (locationFilter === "nearby" && userLocation) {
+        params.lat = userLocation.lat;
+        params.lng = userLocation.lng;
+        params.radius = 10;
+      }
+
       const res = await API.get("/workers", { params });
       setWorkers(res.data);
     } catch (error) {
@@ -33,7 +83,7 @@ export default function Workers() {
       fetchWorkers();
     }, 300);
     return () => clearTimeout(delayDebounceFn);
-  }, [selectedSkill, search]);
+  }, [selectedSkill, search, locationFilter, userLocation]);
 
   const handleVoiceResult = (text) => {
     setSearch(text);
@@ -66,6 +116,56 @@ export default function Workers() {
             className="absolute right-2 top-1/2 -translate-y-1/2 [&_button]:p-1.5 [&_button]:rounded-full [&_span]:text-xl"
           />
         </div>
+      </div>
+
+      {/* Location Filter Toggle */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex bg-surface-container-low rounded-lg p-1 border border-surface-container-high w-fit">
+          <button
+            onClick={() => handleLocationFilterChange("all")}
+            className={`px-4 py-2 rounded-md font-label-md font-semibold transition-all flex items-center gap-1.5 ${
+              locationFilter === "all"
+                ? "bg-primary text-on-primary shadow-sm"
+                : "text-on-surface-variant hover:bg-surface-container"
+            }`}
+          >
+            <span className="material-symbols-outlined text-base">public</span>
+            All Workers
+          </button>
+          <button
+            onClick={() => handleLocationFilterChange("nearby")}
+            className={`px-4 py-2 rounded-md font-label-md font-semibold transition-all flex items-center gap-1.5 ${
+              locationFilter === "nearby"
+                ? "bg-primary text-on-primary shadow-sm"
+                : "text-on-surface-variant hover:bg-surface-container"
+            }`}
+          >
+            <span className="material-symbols-outlined text-base">near_me</span>
+            Nearby (10 km)
+          </button>
+        </div>
+
+        {/* Location status indicator */}
+        {locationFilter === "nearby" && (
+          <div className="flex items-center gap-1.5 text-sm">
+            {userLocation ? (
+              <span className="flex items-center gap-1 text-tertiary font-medium">
+                <span className="material-symbols-outlined text-sm icon-fill">location_on</span>
+                Location enabled
+              </span>
+            ) : locationError ? (
+              <span className="flex items-center gap-1 text-error font-medium">
+                <span className="material-symbols-outlined text-sm">location_disabled</span>
+                {locationError}
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-on-surface-variant font-medium">
+                <span className="w-4 h-4 border-2 border-primary/40 border-t-primary rounded-full animate-spin" />
+                Getting location...
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Skills Filter */}
@@ -117,9 +217,13 @@ export default function Workers() {
              <span className="material-symbols-outlined text-4xl">group_off</span>
           </div>
           <h3 className="font-headline-sm font-bold text-primary mb-2">{t("workers_empty")}</h3>
-          <p className="font-body-md text-on-surface-variant mb-6">No workers match your current filters.</p>
+          <p className="font-body-md text-on-surface-variant mb-6">
+            {locationFilter === "nearby"
+              ? "No workers found within 10 km. Try switching to 'All Workers'."
+              : "No workers match your current filters."}
+          </p>
           <button 
-            onClick={() => { setSearch(""); setSelectedSkill(""); }}
+            onClick={() => { setSearch(""); setSelectedSkill(""); setLocationFilter("all"); }}
             className="px-6 h-12 rounded-lg bg-secondary text-on-secondary font-label-lg font-bold hover:brightness-95 transition-all shadow-sm"
           >
             Clear filters
@@ -129,3 +233,4 @@ export default function Workers() {
     </div>
   );
 }
+

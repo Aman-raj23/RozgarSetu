@@ -1,11 +1,11 @@
 const User = require("../models/User");
 const Rating = require("../models/Rating");
 
-// @desc    Get all workers (with optional skill filter)
-// @route   GET /api/workers?skill=Electrician
+// @desc    Get all workers (with optional skill, search, and location filters)
+// @route   GET /api/workers?skill=Electrician&lat=26.9&lng=80.9&radius=10
 const getWorkers = async (req, res) => {
   try {
-    const { skill, search } = req.query;
+    const { skill, search, lat, lng, radius } = req.query;
 
     let query = { role: "worker" };
 
@@ -29,9 +29,38 @@ const getWorkers = async (req, res) => {
       ];
     }
 
-    const workers = await User.find(query)
+    let workers = await User.find(query)
       .select("-password")
       .sort({ "rating.average": -1, createdAt: -1 });
+
+    // Location-based filtering (Haversine)
+    if (lat && lng && radius) {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+      const maxDist = parseFloat(radius);
+
+      if (!isNaN(userLat) && !isNaN(userLng) && !isNaN(maxDist)) {
+        const toRad = (deg) => (deg * Math.PI) / 180;
+        const haversine = (lat1, lng1, lat2, lng2) => {
+          const R = 6371; // km
+          const dLat = toRad(lat2 - lat1);
+          const dLng = toRad(lng2 - lng1);
+          const a =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+          return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        };
+
+        workers = workers
+          .filter((w) => w.location && (w.location.lat !== 0 || w.location.lng !== 0))
+          .map((w) => {
+            const dist = haversine(userLat, userLng, w.location.lat, w.location.lng);
+            return { ...w.toObject(), distance: Math.round(dist * 10) / 10 };
+          })
+          .filter((w) => w.distance <= maxDist)
+          .sort((a, b) => a.distance - b.distance);
+      }
+    }
 
     res.json(workers);
   } catch (error) {
