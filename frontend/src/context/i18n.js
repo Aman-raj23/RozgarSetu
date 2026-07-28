@@ -12,6 +12,7 @@ const translations = {
   nav_logout: { en: "Logout", hi: "लॉगआउट" },
   nav_profile: { en: "My Profile", hi: "मेरी प्रोफ़ाइल" },
   nav_logged_in_as: { en: "Logged in as", hi: "लॉगिन:" },
+  nav_help_center: { en: "Help Center", hi: "सहायता केंद्र" },
   nav_lang_toggle: { en: "हिंदी", hi: "English" },
 
   // ─── Home Page ───
