@@ -9,6 +9,7 @@ const {
   markNotificationsRead,
   forgotPassword,
   resetPassword,
+  deleteAccount,
 } = require("../controllers/authController");
 const auth = require("../middleware/auth");
 
@@ -27,5 +28,6 @@ router.post("/login", login);
 router.get("/me", auth, getMe);
 router.put("/profile", auth, updateProfile);
 router.put("/notifications/read", auth, markNotificationsRead);
+router.delete("/account", auth, deleteAccount);
 
 module.exports = router;
