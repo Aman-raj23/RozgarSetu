@@ -186,6 +186,11 @@ const translations = {
   profile_updated: { en: "Profile updated successfully!", hi: "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई!" },
   profile_logout: { en: "Logout", hi: "लॉगआउट" },
   profile_member_since: { en: "Member since", hi: "सदस्य" },
+  profile_delete_account: { en: "Delete Account", hi: "खाता हटाएं" },
+  profile_delete_confirm_title: { en: "Delete Your Account?", hi: "क्या आप अपना खाता हटाना चाहते हैं?" },
+  profile_delete_confirm_desc: { en: "This action is permanent and cannot be undone. All your profile data, jobs, and ratings will be permanently removed.", hi: "यह कार्रवाई स्थायी है और इसे वापस नहीं लिया जा सकता। आपकी प्रोफ़ाइल, नौकरियाँ और रेटिंग्स हमेशा के लिए हटा दी जाएंगी।" },
+  profile_delete_btn: { en: "Yes, Delete Account", hi: "हाँ, खाता हटाएं" },
+  profile_deleting: { en: "Deleting Account...", hi: "खाता हटाया जा रहा है..." },
 
   // ─── Worker Profiles & Hiring ───
   nav_workers: { en: "Find Workers", hi: "मज़दूर खोजें" },

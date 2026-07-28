@@ -143,10 +143,10 @@ const register = async (req, res) => {
     console.log(`[OTP Debug] email: ${email}, received otp: "${otpString}" (type: ${typeof otpString}, len: ${otpString.length})`);
     console.log(`[OTP Debug] stored hash: ${otpRecord.otp}`);
     console.log(`[OTP Debug] record createdAt: ${otpRecord.createdAt}`);
-    
+
     const isOtpValid = await otpRecord.compareOtp(otpString);
     console.log(`[OTP Debug] compareOtp result: ${isOtpValid}`);
-    
+
     if (!isOtpValid) {
       return res.status(400).json({ message: "Invalid OTP. Please try again." });
     }
@@ -260,7 +260,7 @@ const updateProfile = async (req, res) => {
     const updates = {};
     if (name && name.trim()) updates.name = name.trim();
     if (phone && phone.trim()) updates.phone = phone.trim();
-    
+
     // Worker specific updates
     if (experience !== undefined) updates.experience = Number(experience);
     if (pastCompany !== undefined) updates.pastCompany = pastCompany.trim();
@@ -428,6 +428,41 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// @desc    Delete user account permanently
+// @route   DELETE /api/auth/account
+// @access  Private
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Clean up related data
+    const Job = require("../models/Job");
+    const Rating = require("../models/Rating");
+
+    if (user.role === "employer") {
+      // Delete all jobs posted by this employer
+      await Job.deleteMany({ employerId: userId });
+    }
+
+    // Delete all ratings given by or received by this user
+    await Rating.deleteMany({
+      $or: [{ employerId: userId }, { workerId: userId }],
+    });
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.error("Delete account error:", error.message);
+    res.status(500).json({ message: "Server error while deleting account" });
+  }
+};
+
 module.exports = {
   sendOtp,
   register,
@@ -437,4 +472,5 @@ module.exports = {
   markNotificationsRead,
   forgotPassword,
   resetPassword,
+  deleteAccount,
 };
