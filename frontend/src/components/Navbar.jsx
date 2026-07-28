@@ -126,6 +126,25 @@ export default function Navbar() {
               <span>{t("nav_workers")}</span>
             </Link>
 
+            {/* Help Center */}
+            <Link
+              to="/help"
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
+                isLinkActive("/help", "/help")
+                  ? "bg-primary-fixed/60 text-primary font-bold"
+                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+              }`}
+            >
+              <span
+                className={`material-symbols-outlined text-xl ${
+                  isLinkActive("/help", "/help") ? "icon-fill text-primary" : "text-on-surface-variant"
+                }`}
+              >
+                help
+              </span>
+              <span>{t("nav_help_center")}</span>
+            </Link>
+
             {/* Employer Specific Links */}
             {user?.role === "employer" && (
               <>
@@ -366,6 +385,21 @@ export default function Navbar() {
                 groups
               </span>
               <span>{t("nav_workers")}</span>
+            </Link>
+
+            <Link
+              to="/help"
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
+                isLinkActive("/help", "/help")
+                  ? "bg-primary-fixed/60 text-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container-high"
+              }`}
+            >
+              <span className={`material-symbols-outlined text-xl ${isLinkActive("/help", "/help") ? "icon-fill" : ""}`}>
+                help
+              </span>
+              <span>{t("nav_help_center")}</span>
             </Link>
 
             {user ? (

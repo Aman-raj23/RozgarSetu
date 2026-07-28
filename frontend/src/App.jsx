@@ -14,6 +14,7 @@ import PostJob from "./pages/PostJob";
 import Profile from "./pages/Profile";
 import Workers from "./pages/Workers";
 import WorkerDetail from "./pages/WorkerDetail";
+import HelpCenter from "./pages/HelpCenter";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
               <Route path="/jobs/:id" element={<JobDetail />} />
               <Route path="/workers" element={<Workers />} />
               <Route path="/workers/:id" element={<WorkerDetail />} />
+              <Route path="/help" element={<HelpCenter />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
