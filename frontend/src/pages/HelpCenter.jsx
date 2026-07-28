@@ -143,11 +143,10 @@ export default function HelpCenter() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold whitespace-nowrap transition-all focus:outline-none active:scale-95 ${
-                  activeTab === tab.id
+                className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold whitespace-nowrap transition-all focus:outline-none active:scale-95 ${activeTab === tab.id
                     ? "bg-primary text-on-primary shadow-xs"
                     : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
-                }`}
+                  }`}
               >
                 <span className="material-symbols-outlined text-lg">{tab.icon}</span>
                 <span>{tab.label}</span>
@@ -157,9 +156,8 @@ export default function HelpCenter() {
 
           {/* Scroll-right fade + arrow indicator */}
           <div
-            className={`absolute right-0 top-0 bottom-3 flex items-center pointer-events-none transition-opacity duration-300 md:hidden ${
-              canScrollRight ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute right-0 top-0 bottom-3 flex items-center pointer-events-none transition-opacity duration-300 md:hidden ${canScrollRight ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div className="w-12 h-full bg-gradient-to-l from-background via-background/80 to-transparent"></div>
             <button
@@ -310,7 +308,7 @@ export default function HelpCenter() {
                 <ul className="mt-4 space-y-3 text-sm text-on-surface-variant">
                   <li className="flex items-start gap-2.5">
                     <span className="material-symbols-outlined text-secondary text-lg mt-0.5">edit_note</span>
-                    <span>{isHi ? "नियोक्ता खाते से लॉगिन करें और '+ काम डालें' बटन पर क्लिक करें।" : "Log in with an employer account and click the '+ Post Work' navbar button."}</span>
+                    <span>{isHi ? "नियोक्ता खाते से लॉगिन करें, 'मेरी नौकरियाँ' डैशबोर्ड पर जाएँ और 'नया काम पोस्ट करें' बटन पर क्लिक करें।" : "Log in with an employer account, go to the 'My Jobs' dashboard, and click the 'Post New Work' button."}</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <span className="material-symbols-outlined text-secondary text-lg mt-0.5">payments</span>

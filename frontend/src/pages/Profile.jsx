@@ -15,7 +15,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
-  
+
   // Worker fields
   const [experience, setExperience] = useState(user?.experience || 0);
   const [pastCompany, setPastCompany] = useState(user?.pastCompany || "");
@@ -27,6 +27,22 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    setError("");
+    try {
+      await API.delete("/auth/account");
+      logout();
+      navigate("/");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete account");
+      setDeletingAccount(false);
+      setShowDeleteModal(false);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -103,18 +119,18 @@ export default function Profile() {
       <div className="bg-surface-container-lowest rounded-xl shadow-md border border-outline-variant/30 overflow-hidden">
         {/* Top Background Pattern */}
         <div className="h-24 bg-primary-container relative overflow-hidden">
-           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         </div>
 
         {/* Avatar section */}
         <div className="flex flex-col items-center pt-6 pb-4 relative -mt-16">
-          <div 
+          <div
             className="w-24 h-24 rounded-full flex items-center justify-center shadow-md border-4 border-surface-container-lowest transition-colors bg-primary text-on-primary text-4xl font-bold"
             style={user?.role === "worker" ? { backgroundColor: avatarColor } : {}}
           >
             {user.name?.charAt(0).toUpperCase()}
           </div>
-          
+
           {editing && user?.role === "worker" && (
             <div className="flex gap-2 mt-4 bg-surface-container rounded-full px-3 py-2 shadow-sm border border-outline-variant/50">
               {AVATAR_COLORS.map(color => (
@@ -218,7 +234,7 @@ export default function Profile() {
                 <span className="material-symbols-outlined text-secondary">engineering</span>
                 Worker Profile
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block font-label-lg font-bold text-on-surface mb-2">
@@ -273,7 +289,7 @@ export default function Profile() {
                           <span key={s} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-label-sm font-semibold bg-chip-green text-chip-green-text border border-chip-green-border">
                             {s}
                             <button type="button" onClick={() => removeSkill(s)} className="ml-1 text-chip-green-text hover:text-error">
-                               <span className="material-symbols-outlined text-sm">close</span>
+                              <span className="material-symbols-outlined text-sm">close</span>
                             </button>
                           </span>
                         ))}
@@ -324,53 +340,107 @@ export default function Profile() {
           )}
 
           {/* Action buttons */}
-          <div className="pt-8 border-t border-outline-variant flex flex-col sm:flex-row gap-4">
-            {editing ? (
-              <>
+          <div className="pt-8 border-t border-outline-variant/30 flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row w-full gap-4">
+              {editing ? (
+                <>
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex-1 h-12 rounded-lg bg-primary hover:brightness-95 text-on-primary font-label-lg font-bold shadow-md disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+                  >
+                    {saving ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        {t("profile_saving")}
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-lg">save</span>
+                        {t("profile_save")}
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="flex-1 h-12 rounded-lg bg-surface-container text-on-surface font-label-lg font-bold hover:bg-surface-container-high transition-all"
+                  >
+                    {t("profile_cancel")}
+                  </button>
+                </>
+              ) : (
                 <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="flex-1 h-12 rounded-lg bg-primary hover:brightness-95 text-on-primary font-label-lg font-bold shadow-md disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+                  onClick={() => setEditing(true)}
+                  className="flex-1 h-12 rounded-lg bg-primary hover:brightness-95 text-on-primary font-label-lg font-bold shadow-md transition-all flex items-center justify-center gap-2"
                 >
-                  {saving ? (
-                    <>
-                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      {t("profile_saving")}
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-lg">save</span>
-                      {t("profile_save")}
-                    </>
-                  )}
+                  <span className="material-symbols-outlined text-lg">edit</span>
+                  {t("profile_edit")}
                 </button>
-                <button
-                  onClick={handleCancel}
-                  className="flex-1 h-12 rounded-lg bg-surface-container text-on-surface font-label-lg font-bold hover:bg-surface-container-high transition-all"
-                >
-                  {t("profile_cancel")}
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setEditing(true)}
-                className="w-full sm:w-auto flex-1 h-12 rounded-lg bg-primary hover:brightness-95 text-on-primary font-label-lg font-bold shadow-md transition-all flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined text-lg">edit</span>
-                {t("profile_edit")}
-              </button>
-            )}
+              )}
 
-            <button
-              onClick={handleLogout}
-              className="w-full sm:w-auto px-8 h-12 rounded-lg bg-error-container text-error border border-error/20 font-label-lg font-bold hover:brightness-95 transition-all flex items-center justify-center gap-2"
-            >
-              <span className="material-symbols-outlined text-lg">logout</span>
-              {t("profile_logout")}
-            </button>
+              <button
+                onClick={handleLogout}
+                className="px-6 h-12 rounded-lg bg-surface-container text-on-surface-variant font-label-lg font-bold hover:bg-surface-container-high transition-all flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-lg">logout</span>
+                {t("profile_logout")}
+              </button>
+            </div>
+
+            {/* Danger Zone: Delete Account */}
+            <div className="pt-3 border-t border-error/10 flex justify-end">
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="text-xs font-semibold text-error hover:underline flex items-center gap-1.5 transition-all opacity-80 hover:opacity-100"
+              >
+                <span className="material-symbols-outlined text-base">delete_forever</span>
+                {t("profile_delete_account")}
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
+          <div className="bg-surface-container-lowest rounded-2xl p-6 max-w-md w-full border border-error/30 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-error font-bold text-lg">
+              <span className="material-symbols-outlined text-3xl">warning</span>
+              <h3>{t("profile_delete_confirm_title")}</h3>
+            </div>
+            <p className="text-xs md:text-sm text-on-surface-variant leading-relaxed">
+              {t("profile_delete_confirm_desc")}
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deletingAccount}
+                className="px-4 py-2 rounded-xl bg-surface-container text-on-surface font-semibold text-xs md:text-sm hover:bg-surface-container-high transition-all"
+              >
+                {t("profile_cancel")}
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="px-4 py-2 rounded-xl bg-error text-on-error font-bold text-xs md:text-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50"
+              >
+                {deletingAccount ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    {t("profile_deleting")}
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-base">delete_forever</span>
+                    {t("profile_delete_btn")}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
