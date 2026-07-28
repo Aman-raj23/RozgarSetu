@@ -70,16 +70,14 @@ export default function Navbar() {
             {/* Home */}
             <Link
               to="/"
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
-                isLinkActive("/")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
-              }`}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${isLinkActive("/")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+                }`}
             >
               <span
-                className={`material-symbols-outlined text-xl ${
-                  isLinkActive("/") ? "icon-fill text-primary" : "text-on-surface-variant"
-                }`}
+                className={`material-symbols-outlined text-xl ${isLinkActive("/") ? "icon-fill text-primary" : "text-on-surface-variant"
+                  }`}
               >
                 home
               </span>
@@ -90,16 +88,14 @@ export default function Navbar() {
             {(!user || user.role !== "employer") && (
               <Link
                 to="/jobs"
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
-                  isLinkActive("/jobs", "/jobs")
-                    ? "bg-primary-fixed/60 text-primary font-bold"
-                    : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
-                }`}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${isLinkActive("/jobs", "/jobs")
+                  ? "bg-primary-fixed/60 text-primary font-bold"
+                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+                  }`}
               >
                 <span
-                  className={`material-symbols-outlined text-xl ${
-                    isLinkActive("/jobs", "/jobs") ? "icon-fill text-primary" : "text-on-surface-variant"
-                  }`}
+                  className={`material-symbols-outlined text-xl ${isLinkActive("/jobs", "/jobs") ? "icon-fill text-primary" : "text-on-surface-variant"
+                    }`}
                 >
                   work
                 </span>
@@ -110,16 +106,14 @@ export default function Navbar() {
             {/* Find Workers */}
             <Link
               to="/workers"
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
-                isLinkActive("/workers", "/workers")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
-              }`}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${isLinkActive("/workers", "/workers")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+                }`}
             >
               <span
-                className={`material-symbols-outlined text-xl ${
-                  isLinkActive("/workers", "/workers") ? "icon-fill text-primary" : "text-on-surface-variant"
-                }`}
+                className={`material-symbols-outlined text-xl ${isLinkActive("/workers", "/workers") ? "icon-fill text-primary" : "text-on-surface-variant"
+                  }`}
               >
                 groups
               </span>
@@ -129,16 +123,14 @@ export default function Navbar() {
             {/* Help Center */}
             <Link
               to="/help"
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
-                isLinkActive("/help", "/help")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
-              }`}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${isLinkActive("/help", "/help")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+                }`}
             >
               <span
-                className={`material-symbols-outlined text-xl ${
-                  isLinkActive("/help", "/help") ? "icon-fill text-primary" : "text-on-surface-variant"
-                }`}
+                className={`material-symbols-outlined text-xl ${isLinkActive("/help", "/help") ? "icon-fill text-primary" : "text-on-surface-variant"
+                  }`}
               >
                 help
               </span>
@@ -147,37 +139,21 @@ export default function Navbar() {
 
             {/* Employer Specific Links */}
             {user?.role === "employer" && (
-              <>
-                <Link
-                  to="/dashboard"
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${
-                    isLinkActive("/dashboard")
-                      ? "bg-primary-fixed/60 text-primary font-bold"
-                      : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
+              <Link
+                to="/dashboard"
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none ${isLinkActive("/dashboard")
+                  ? "bg-primary-fixed/60 text-primary font-bold"
+                  : "text-on-surface-variant hover:text-primary hover:bg-surface-container-high/60"
                   }`}
-                >
-                  <span
-                    className={`material-symbols-outlined text-xl ${
-                      isLinkActive("/dashboard") ? "icon-fill text-primary" : "text-on-surface-variant"
+              >
+                <span
+                  className={`material-symbols-outlined text-xl ${isLinkActive("/dashboard") ? "icon-fill text-primary" : "text-on-surface-variant"
                     }`}
-                  >
-                    dashboard
-                  </span>
-                  <span>{t("nav_dashboard")}</span>
-                </Link>
-
-                <Link
-                  to="/post-job"
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 focus:outline-none ${
-                    isLinkActive("/post-job")
-                      ? "bg-secondary text-on-secondary"
-                      : "bg-secondary-container text-on-secondary-container hover:bg-secondary hover:text-on-secondary"
-                  }`}
                 >
-                  <span className="material-symbols-outlined text-xl">add_circle</span>
-                  <span>{t("nav_post_job")}</span>
-                </Link>
-              </>
+                  dashboard
+                </span>
+                <span>{t("nav_dashboard")}</span>
+              </Link>
             )}
           </nav>
 
@@ -229,9 +205,8 @@ export default function Navbar() {
                         [...user.notifications].reverse().map((n, i) => (
                           <div
                             key={i}
-                            className={`p-4 transition-colors hover:bg-surface-container-low ${
-                              !n.read ? "bg-primary-fixed/25 font-medium" : ""
-                            }`}
+                            className={`p-4 transition-colors hover:bg-surface-container-low ${!n.read ? "bg-primary-fixed/25 font-medium" : ""
+                              }`}
                           >
                             <div className="flex items-start gap-2.5">
                               <span className="material-symbols-outlined text-primary text-lg mt-0.5">info</span>
@@ -261,9 +236,8 @@ export default function Navbar() {
               <div className="hidden md:flex items-center gap-2.5 ml-1 pl-3 border-l border-outline-variant/30">
                 <Link
                   to="/profile"
-                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-surface-container-high/60 transition-all focus:outline-none ${
-                    isLinkActive("/profile") ? "bg-surface-container-high font-bold" : ""
-                  }`}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-surface-container-high/60 transition-all focus:outline-none ${isLinkActive("/profile") ? "bg-surface-container-high font-bold" : ""
+                    }`}
                   title="View Profile"
                 >
                   <div className="w-8.5 h-8.5 rounded-full bg-gradient-to-tr from-primary to-primary-container text-on-primary flex items-center justify-center font-bold text-sm border border-surface">
@@ -343,11 +317,10 @@ export default function Navbar() {
             <Link
               to="/"
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                isLinkActive("/")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface hover:bg-surface-container-high"
-              }`}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface hover:bg-surface-container-high"
+                }`}
             >
               <span className={`material-symbols-outlined text-xl ${isLinkActive("/") ? "icon-fill" : ""}`}>
                 home
@@ -359,11 +332,10 @@ export default function Navbar() {
               <Link
                 to="/jobs"
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                  isLinkActive("/jobs", "/jobs")
-                    ? "bg-primary-fixed/60 text-primary font-bold"
-                    : "text-on-surface hover:bg-surface-container-high"
-                }`}
+                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/jobs", "/jobs")
+                  ? "bg-primary-fixed/60 text-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container-high"
+                  }`}
               >
                 <span className={`material-symbols-outlined text-xl ${isLinkActive("/jobs", "/jobs") ? "icon-fill" : ""}`}>
                   work
@@ -375,11 +347,10 @@ export default function Navbar() {
             <Link
               to="/workers"
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                isLinkActive("/workers", "/workers")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface hover:bg-surface-container-high"
-              }`}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/workers", "/workers")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface hover:bg-surface-container-high"
+                }`}
             >
               <span className={`material-symbols-outlined text-xl ${isLinkActive("/workers", "/workers") ? "icon-fill" : ""}`}>
                 groups
@@ -390,11 +361,10 @@ export default function Navbar() {
             <Link
               to="/help"
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                isLinkActive("/help", "/help")
-                  ? "bg-primary-fixed/60 text-primary font-bold"
-                  : "text-on-surface hover:bg-surface-container-high"
-              }`}
+              className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/help", "/help")
+                ? "bg-primary-fixed/60 text-primary font-bold"
+                : "text-on-surface hover:bg-surface-container-high"
+                }`}
             >
               <span className={`material-symbols-outlined text-xl ${isLinkActive("/help", "/help") ? "icon-fill" : ""}`}>
                 help
@@ -407,11 +377,10 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                    isLinkActive("/profile")
-                      ? "bg-primary-fixed/60 text-primary font-bold"
-                      : "text-on-surface hover:bg-surface-container-high"
-                  }`}
+                  className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/profile")
+                    ? "bg-primary-fixed/60 text-primary font-bold"
+                    : "text-on-surface hover:bg-surface-container-high"
+                    }`}
                 >
                   <span className={`material-symbols-outlined text-xl ${isLinkActive("/profile") ? "icon-fill" : ""}`}>
                     account_circle
@@ -420,31 +389,19 @@ export default function Navbar() {
                 </Link>
 
                 {user.role === "employer" && (
-                  <>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${
-                        isLinkActive("/dashboard")
-                          ? "bg-primary-fixed/60 text-primary font-bold"
-                          : "text-on-surface hover:bg-surface-container-high"
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold text-sm transition-all focus:outline-none ${isLinkActive("/dashboard")
+                      ? "bg-primary-fixed/60 text-primary font-bold"
+                      : "text-on-surface hover:bg-surface-container-high"
                       }`}
-                    >
-                      <span className={`material-symbols-outlined text-xl ${isLinkActive("/dashboard") ? "icon-fill" : ""}`}>
-                        dashboard
-                      </span>
-                      <span>{t("nav_dashboard")}</span>
-                    </Link>
-
-                    <Link
-                      to="/post-job"
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary text-on-secondary font-bold text-sm text-center mt-2 justify-center focus:outline-none"
-                    >
-                      <span className="material-symbols-outlined text-xl">add_circle</span>
-                      <span>{t("nav_post_job")}</span>
-                    </Link>
-                  </>
+                  >
+                    <span className={`material-symbols-outlined text-xl ${isLinkActive("/dashboard") ? "icon-fill" : ""}`}>
+                      dashboard
+                    </span>
+                    <span>{t("nav_dashboard")}</span>
+                  </Link>
                 )}
 
                 {user.role === "worker" && (
