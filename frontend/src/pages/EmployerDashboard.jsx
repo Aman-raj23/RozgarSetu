@@ -20,7 +20,7 @@ export default function EmployerDashboard() {
   const fetchMyJobs = async () => {
     try {
       const res = await API.get("/jobs");
-      // Filter jobs posted by current user
+
       const myJobs = res.data.filter(
         (j) => j.employerId?._id === user?._id || j.employerId === user?._id
       );
@@ -84,14 +84,14 @@ export default function EmployerDashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
         <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
           <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center mb-1">
-             <span className="material-symbols-outlined icon-fill">work</span>
+            <span className="material-symbols-outlined icon-fill">work</span>
           </div>
           <p className="font-display-sm font-bold text-primary">{jobs.length}</p>
           <p className="font-label-md text-on-surface-variant">{t("dash_total")}</p>
         </div>
         <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
           <div className="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-1">
-             <span className="material-symbols-outlined icon-fill">check_circle</span>
+            <span className="material-symbols-outlined icon-fill">check_circle</span>
           </div>
           <p className="font-display-sm font-bold text-secondary">
             {jobs.filter((j) => !j.isSuspicious).length}
@@ -100,7 +100,7 @@ export default function EmployerDashboard() {
         </div>
         <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
           <div className="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center mb-1">
-             <span className="material-symbols-outlined icon-fill">warning</span>
+            <span className="material-symbols-outlined icon-fill">warning</span>
           </div>
           <p className="font-display-sm font-bold text-error">
             {jobs.filter((j) => j.isSuspicious).length}
@@ -109,7 +109,7 @@ export default function EmployerDashboard() {
         </div>
         <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-5 flex flex-col items-start gap-1">
           <div className="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center mb-1 p-1.5">
-             <img src="/logo.png" alt="Logo" className="w-full h-full object-contain rounded" />
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain rounded" />
           </div>
           <p className="font-display-sm font-bold text-tertiary">
             {hiredCount}
@@ -173,9 +173,9 @@ export default function EmployerDashboard() {
                   </span>
                   <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                   <span className="flex items-center gap-1">
-                     <span className="material-symbols-outlined text-sm">work</span>
-                     {job.skills?.slice(0,2).join(", ")}
-                     {job.skills?.length > 2 ? ` +${job.skills.length - 2}` : ""}
+                    <span className="material-symbols-outlined text-sm">work</span>
+                    {job.skills?.slice(0, 2).join(", ")}
+                    {job.skills?.length > 2 ? ` +${job.skills.length - 2}` : ""}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
                   <span className="flex items-center gap-1">
