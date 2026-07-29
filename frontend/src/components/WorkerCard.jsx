@@ -8,7 +8,7 @@ export default function WorkerCard({ worker }) {
     <div className="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant hover:shadow-md p-5 transition-all animate-fade-in group">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div 
+        <div
           className="w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center shadow-sm"
           style={{ backgroundColor: worker.avatarColor || "#1b4332" }}
         >
@@ -24,7 +24,7 @@ export default function WorkerCard({ worker }) {
               {worker.name}
             </h3>
           </Link>
-          
+
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1 text-sm font-medium text-secondary">
               <span className="material-symbols-outlined text-sm icon-fill" style={{ color: "#ffab69" }}>star</span>
@@ -57,14 +57,14 @@ export default function WorkerCard({ worker }) {
 
       {/* Action Buttons */}
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <a 
+        <a
           href={`tel:${worker.phone}`}
           className="flex items-center justify-center gap-1.5 h-11 rounded-lg bg-secondary-container text-on-secondary-container font-semibold text-sm hover:brightness-95 transition-all"
         >
           <span className="material-symbols-outlined text-lg">call</span>
           {t("card_call").split(" ")[0]}
         </a>
-        <Link 
+        <Link
           to={`/workers/${worker._id}`}
           className="flex items-center justify-center h-11 rounded-lg bg-surface-container-lowest border-2 border-primary text-primary font-semibold text-sm hover:bg-surface-container-low transition-colors"
         >
