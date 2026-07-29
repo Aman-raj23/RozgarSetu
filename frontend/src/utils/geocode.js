@@ -6,8 +6,7 @@ const cache = new Map();
 /**
  * Get a human-readable location name from coordinates.
  * Uses OpenStreetMap Nominatim API (free, no key required).
- * Results are cached to avoid redundant network calls.
- *
+ * 
  * @param {number} lat - Latitude
  * @param {number} lng - Longitude
  * @returns {Promise<string>} - Location name (e.g. "Raipur, Chhattisgarh")

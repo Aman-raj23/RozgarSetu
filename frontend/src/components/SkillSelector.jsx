@@ -31,28 +31,25 @@ export default function SkillSelector({ onSelect, selected = [] }) {
             key={skill.name}
             onClick={() => handleClick(skill.name)}
             style={{ animationDelay: `${idx * 40}ms` }}
-            className={`group relative flex flex-col items-center justify-center gap-3 p-5 rounded-xl border transition-all duration-300 ease-out active:scale-[0.97] animate-fade-in-up ${
-              isSelected
+            className={`group relative flex flex-col items-center justify-center gap-3 p-5 rounded-xl border transition-all duration-300 ease-out active:scale-[0.97] animate-fade-in-up ${isSelected
                 ? "bg-primary-container border-primary shadow-md scale-[1.04]"
                 : "bg-surface-container-lowest border-outline-variant/50 hover:shadow-md hover:border-primary/30 hover:bg-surface-container-low hover:scale-[1.03]"
-            }`}
+              }`}
           >
             {/* Icon container */}
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${
-                isSelected
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${isSelected
                   ? "bg-primary text-on-primary"
                   : "bg-primary-container/10 text-primary group-hover:bg-primary-container group-hover:text-on-primary-container"
-              }`}
+                }`}
             >
               <span className="material-symbols-outlined text-2xl">{skill.icon}</span>
             </div>
 
             {/* Label */}
             <span
-              className={`text-sm font-semibold text-center leading-tight transition-colors ${
-                isSelected ? "text-on-primary-container" : "text-on-surface"
-              }`}
+              className={`text-sm font-semibold text-center leading-tight transition-colors ${isSelected ? "text-on-primary-container" : "text-on-surface"
+                }`}
             >
               {t(`skill_${skill.name}`)}
             </span>
