@@ -58,7 +58,7 @@ export default function Navbar() {
             <img
               src="/logo.png"
               alt="RozgarSetu Logo"
-              className="w-10 h-10 object-contain rounded-xl transition-transform duration-300 group-hover:scale-105"
+              className="w-10 h-10 object-contain rounded-xl transition-transform duration-300 group-hover:scale-110"
             />
             <span className="font-extrabold text-xl md:text-2xl text-primary tracking-tight leading-none">
               Rozgar<span className="text-secondary">Setu</span>
